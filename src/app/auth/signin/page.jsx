@@ -1,10 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { Button, Description, Label, Radio, RadioGroup } from "@heroui/react";
+import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons'; 
-import { FaGoogle } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { signIn } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const SigninPage = () => {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [role, setRole] = useState("buyer"); // State for Role Selection
@@ -32,20 +35,29 @@ const SigninPage = () => {
 
     setIsSubmitting(true);
 
-    const signinData = {
-      email: formValues.email,
-      password: formValues.password,
-      role: role, 
-    };
-
     try {
-      console.log("Submitting Signin Data:", signinData);
+      const { data, error } = await signIn.email({
+        email: formValues.email,
+        password: formValues.password,
+      });
+
+      if (error) {
+        console.error("Signin Error:", error);
+        alert(`❌ Sign in failed: ${error.message || 'Incorrect email or password.'}`);
+        return;
+      }
+
+      console.log("Submitting Signin Data:", formValues);
       
       // Dynamic success message
       setSuccessMessage("🎉 Welcome back! You have successfully signed in.");
       
       e.target.reset();
       setRole("buyer"); // Reset to default role
+
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     } catch (error) {
       console.error(error);
       alert("❌ Sign in failed.");
@@ -187,7 +199,7 @@ const SigninPage = () => {
             variant="bordered"
             className="w-full h-12 border border-gray-800 hover:border-[#D4AF37]/50 bg-[#1A1A1A]/40 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
           >
-            <FaGoogle className="text-lg" />
+            <span><FcGoogle /></span>
             Continue with Google
           </Button>
 

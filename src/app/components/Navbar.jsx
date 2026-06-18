@@ -5,13 +5,56 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Link, Button } from "@heroui/react";
 import { Magnifier, ChevronDown } from "@gravity-ui/icons";
+import { useSession, authClient } from "@/lib/auth-client";
 
 export default function CustomHeader() {
+  const { data: session, isPending } = useSession();
+  const user = session?.user;
+  const userRole = user?.role || null;
+
+
+  console.log('userdata ', user)
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [theme, setTheme] = useState("dark");
   const pathname = usePathname();
-  
-  // Mock User Role (dynamically change this: 'user', 'artist', 'admin', or null for guests)
-  const [userRole, setUserRole] = useState("user");
+
+  useEffect(() => {
+    const handleClose = () => setIsProfileOpen(false);
+    if (isProfileOpen) {
+      document.addEventListener("click", handleClose);
+    }
+    return () => document.removeEventListener("click", handleClose);
+  }, [isProfileOpen]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = (e) => {
+    e.stopPropagation();
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    setIsProfileOpen(false);
+    window.location.reload();
+  };
 
   // Helper function for active routes
   const isActive = (path) => pathname === path;
@@ -117,7 +160,7 @@ export default function CustomHeader() {
                   Dashboard <ChevronDown width={14} className="group-hover:rotate-180 transition-transform duration-300" />
                 </span>
                 <div className="absolute top-[70px] left-0 min-w-[200px] bg-[#1f2019] border border-[#3a3c2f] shadow-xl rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  {userRole === "user" && <Link href="/dashboard/user" className={dropdownItemClass}>User Dashboard</Link>}
+                  {(userRole === "buyer" || userRole === "user") && <Link href="/dashboard/user" className={dropdownItemClass}>User Dashboard</Link>}
                   {userRole === "artist" && <Link href="/dashboard/artist" className={dropdownItemClass}>Artist Dashboard</Link>}
                   {userRole === "admin" && <Link href="/dashboard/admin" className={dropdownItemClass}>Admin Dashboard</Link>}
                 </div>
@@ -147,18 +190,91 @@ export default function CustomHeader() {
           <button aria-label="Search" className="hidden lg:block text-[#e8dcb8] hover:text-white transition-colors">
             <Magnifier width={20} />
           </button>
-          <div className="hidden items-center gap-4 md:flex">
-            <Link href="/auth/signin" className="text-[#e8dcb8] hover:text-white transition-colors font-medium">Sign In</Link>
-            <Link 
-             
-              href="/auth/signup" 
-              variant="bordered" 
-              radius="sm"
-              className="text-[#e8dcb8] border-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] font-semibold"
-            >
-              Sign Up
-            </Link>
-          </div>
+          {isPending ? (
+            <div className="w-8 h-8 rounded-full border border-gray-700 animate-pulse bg-gray-800"></div>
+          ) : session ? (
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button 
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-2 focus:outline-none cursor-pointer"
+              >
+                <div className="relative w-9 h-9 rounded-full border border-[#e8dcb8]/40 overflow-hidden bg-[#1f2019]">
+                  {user?.image ? (
+                    <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[#e8dcb8] text-sm font-bold bg-[#1a1b16]">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  )}
+                </div>
+                <span className="hidden sm:inline text-sm text-[#e8dcb8] hover:text-white font-medium max-w-[100px] truncate">
+                  {user?.name}
+                </span>
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-[#1f2019] border border-[#3a3c2f] rounded-lg shadow-xl py-2 z-50 text-left">
+                  <div className="px-4 py-2 border-b border-[#3a3c2f] mb-1">
+                    <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
+                    <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                  </div>
+
+                  <Link href="/profile" className={dropdownItemClass}>
+                    Profile
+                  </Link>
+
+                  <button 
+                    onClick={toggleTheme}
+                    className="w-full text-left px-4 py-2.5 text-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] transition-colors text-sm flex items-center justify-between cursor-pointer"
+                  >
+                    <span>Theme</span>
+                    <span className="text-xs font-semibold uppercase px-1.5 py-0.5 rounded bg-black/40 text-white">
+                      {theme === "dark" ? "Dark 🌙" : "Light ☀️"}
+                    </span>
+                  </button>
+
+                  <div className="border-t border-[#3a3c2f]/40 my-1"></div>
+                  
+                  <Link href="/dashboard/user" className={dropdownItemClass}>
+                    Buyer Dashboard
+                  </Link>
+                  <Link href="/dashboard/artist" className={dropdownItemClass}>
+                    Artist Dashboard
+                  </Link>
+                  <Link href="/dashboard/admin" className={dropdownItemClass}>
+                    Admin Dashboard
+                  </Link>
+
+                  <Link href="/profile" className={dropdownItemClass}>
+                    Settings
+                  </Link>
+
+                  <div className="border-t border-[#3a3c2f]/40 my-1"></div>
+
+                  <button 
+                    onClick={handleSignOut}
+                    className="w-full text-left px-4 py-2.5 text-red-400 hover:bg-red-500 hover:text-white transition-colors text-sm font-medium cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/auth/signin" className="text-[#e8dcb8] hover:text-white transition-colors font-medium text-xs sm:text-sm">
+                Sign In
+              </Link>
+              <Link 
+                href="/auth/signup" 
+                variant="bordered" 
+                radius="sm"
+                className="text-[#e8dcb8] border-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] font-semibold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3 sm:py-2 border"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -195,10 +311,12 @@ export default function CustomHeader() {
                 </Link>
               </li>
             ))}
-            <li className="mt-4 flex flex-col gap-4 border-t border-[#3a3c2f] pt-6 sm:hidden">
-              <Link href="/auth/signin" className="text-xl text-[#e8dcb8]">Sign In</Link>
-              <Link  href="/auth/signup" className="w-full bg-[#e8dcb8] text-[#1a1b16] font-bold">Sign Up</Link>
-            </li>
+            {!session && (
+              <li className="mt-4 flex flex-col gap-4 border-t border-[#3a3c2f] pt-6 sm:hidden">
+                <Link href="/auth/signin" className="text-xl text-[#e8dcb8]" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
+                <Link href="/auth/signup" className="w-full text-center bg-[#e8dcb8] text-[#1a1b16] font-bold py-2.5 rounded-sm" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+              </li>
+            )}
           </ul>
 
           {/* Contact Details in Mobile Menu */}

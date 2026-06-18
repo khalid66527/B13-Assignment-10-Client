@@ -46,25 +46,13 @@ export default function CustomHeader() {
       style={{ backgroundImage: "url('/image/Navimg.jpg')", backgroundColor: "rgba(26, 27, 22, 0.9)" }} 
     >
       {/* --- TOP NAVBAR SECTION --- */}
-      <nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 lg:px-8 relative z-20">
+      <nav className="mx-auto flex h-20 w-full w-10/12 items-center justify-between px-4 lg:px-8 relative z-20">
         
-         {/* --- CENTER: Logo --- */}
-        <div className="flex flex-1 items-center justify-start">
-          <Link href="/">
-            <Image
-              src="/image/logo.png"
-              alt="ArtHub Logo"
-              width={100}
-              height={40}
-              className="object-contain transition-transform hover:scale-105 duration-300 w-auto h-auto"
-              priority
-            />
-          </Link>
-        </div>
+        
 
 
         {/* --- LEFT SIDE: Hamburger & Navigation Links --- */}
-        <div className="flex flex-1 items-center gap-4 justify-center">
+        <div className="flex flex-1 items-center gap-4 justify-start">
           <button
             className="lg:hidden text-[#e8dcb8]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -138,6 +126,20 @@ export default function CustomHeader() {
           </ul>
         </div>
 
+         {/* --- CENTER: Logo --- */}
+        <div className="flex flex-1 items-center justify-center">
+          <Link href="/">
+            <Image
+              src="/image/logo.png"
+              alt="ArtHub Logo"
+              width={100}
+              height={40}
+              className="object-contain transition-transform hover:scale-105 duration-300 w-auto h-auto"
+              priority
+            />
+          </Link>
+        </div>
+
        
 
         {/* --- RIGHT SIDE: Search & Auth --- */}
@@ -146,16 +148,16 @@ export default function CustomHeader() {
             <Magnifier width={20} />
           </button>
           <div className="hidden items-center gap-4 md:flex">
-            <Link href="/login" className="text-[#e8dcb8] hover:text-white transition-colors font-medium">Sign In</Link>
-            <Button 
-              as={Link} 
-              href="/register" 
+            <Link href="/auth/signin" className="text-[#e8dcb8] hover:text-white transition-colors font-medium">Sign In</Link>
+            <Link 
+             
+              href="/auth/signup" 
               variant="bordered" 
               radius="sm"
               className="text-[#e8dcb8] border-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] font-semibold"
             >
               Sign Up
-            </Button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -194,8 +196,8 @@ export default function CustomHeader() {
               </li>
             ))}
             <li className="mt-4 flex flex-col gap-4 border-t border-[#3a3c2f] pt-6 sm:hidden">
-              <Link href="/login" className="text-xl text-[#e8dcb8]">Sign In</Link>
-              <Button as={Link} href="/register" className="w-full bg-[#e8dcb8] text-[#1a1b16] font-bold">Sign Up</Button>
+              <Link href="/auth/signin" className="text-xl text-[#e8dcb8]">Sign In</Link>
+              <Link  href="/auth/signup" className="w-full bg-[#e8dcb8] text-[#1a1b16] font-bold">Sign Up</Link>
             </li>
           </ul>
 

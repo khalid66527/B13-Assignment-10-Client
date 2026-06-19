@@ -10,6 +10,7 @@ function Profile() {
   const router = useRouter();
 
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [image, setImage] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -17,6 +18,7 @@ function Profile() {
     if (user) {
       setName(user.name || '');
       setImage(user.image || '');
+      setEmail(user.email || '');
     }
   }, [user]);
 
@@ -33,7 +35,7 @@ function Profile() {
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center text-center p-4">
         <h2 className="text-2xl font-bold text-[#D4AF37] mb-4">Access Denied</h2>
         <p className="text-gray-400 mb-6">You must be signed in to view your profile page.</p>
-        <Button 
+        <Button
           onClick={() => router.push('/auth/signin')}
           className="bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black font-bold px-6 py-2.5 rounded-xl hover:brightness-110 transition-all cursor-pointer"
         >
@@ -49,6 +51,7 @@ function Profile() {
     setIsUpdating(true);
 
     try {
+      // ইমেইল যেহেতু পরিবর্তন করা যাবে না, তাই updateUser থেকে email বাদ দেওয়া হয়েছে
       const { data, error } = await authClient.updateUser({
         name,
         image,
@@ -71,14 +74,14 @@ function Profile() {
 
   return (
     <div className="relative min-h-screen bg-[#0A0A0A] text-gray-300 font-sans flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      
+
       {/* Ambient Premium Gold Glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#D4AF37]/5 rounded-full blur-[150px] pointer-events-none"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#AA7C11]/10 rounded-full blur-[150px] pointer-events-none"></div>
 
       <div className="relative z-10 w-full max-w-2xl">
         <div className="bg-gradient-to-b from-[#161616]/80 to-[#0F0F0F]/90 backdrop-blur-xl border border-[#D4AF37]/20 rounded-[2.5rem] p-8 md:p-10 shadow-[0_0_50px_rgba(212,175,55,0.05)] relative overflow-hidden">
-          
+
           <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
 
           {/* Header */}
@@ -113,16 +116,17 @@ function Profile() {
             {/* Right Column: Edit Form */}
             <div className="md:col-span-2 space-y-5">
               <h3 className="text-lg font-semibold text-[#D4AF37]">Edit Profile Details</h3>
-              
+
               <form onSubmit={handleUpdate} className="space-y-4">
-                {/* Email (Readonly) */}
+                {/* Email (Readonly fixed) */}
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-gray-500 ml-1">Email Address (Cannot change)</label>
                   <input
                     type="email"
-                    value={user?.email || ''}
+                    value={email}
+                    readOnly
                     disabled
-                    className="w-full bg-[#1A1A1A]/40 border border-[#D4AF37]/10 rounded-xl px-4 py-3 text-gray-500 text-sm cursor-not-allowed"
+                    className="w-full bg-[#1A1A1A]/30 border border-[#D4AF37]/10 rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed select-none outline-none"
                   />
                 </div>
 

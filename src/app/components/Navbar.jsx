@@ -13,7 +13,7 @@ export default function CustomHeader() {
   const userRole = user?.role || null;
 
 
-  console.log('userdata ', user)
+  // console.log('userdata ', user)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -28,15 +28,15 @@ export default function CustomHeader() {
     return () => document.removeEventListener("click", handleClose);
   }, [isProfileOpen]);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    setTheme(savedTheme);
-    if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedTheme = localStorage.getItem("theme") || "dark";
+  //   setTheme(savedTheme);
+  //   if (savedTheme === "dark") {
+  //     document.documentElement.classList.add("dark");
+  //   } else {
+  //     document.documentElement.classList.remove("dark");
+  //   }
+  // }, []);
 
   const toggleTheme = (e) => {
     e.stopPropagation();

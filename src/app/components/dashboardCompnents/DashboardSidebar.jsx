@@ -30,8 +30,8 @@ const DashboardSidebar = () => {
       icon: "solar:add-circle-bold-duotone",
     },
     {
-      title: "Profile",
-      path: "/profile",
+      title: "Company Profile",
+      path: "/dashboard/artist/company",
       icon: "solar:user-circle-bold-duotone",
     },
   

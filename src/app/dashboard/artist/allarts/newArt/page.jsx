@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { createArt } from "@/lib/actions/artstor";
+import { redirect } from "next/navigation";
 
 export default function NewArtPostForm() {
   // শুধুমাত্র ইমেজ লিংকের প্রিভিউর জন্য State
@@ -10,11 +12,20 @@ export default function NewArtPostForm() {
 
   const categories = ["Painting", "Digital Art", "Sculpture", "Photography"];
 
-  const onSubmitDara = (e) => {
+  const onSubmitDara = async(e) => {
     e.preventDefault();
+     
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData.entries());
-    console.log("form er data ", formValues);
+    
+   
+
+    const res = await createArt(formValues)
+    if(res.insertedId){
+      alert("Art Posted Successfully !")
+      e.target.reset();
+      redirect('/dashboard/artist/allarts')
+    }
   };
 
   const handleRemoveImage = () => {

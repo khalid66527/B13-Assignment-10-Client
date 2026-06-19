@@ -253,14 +253,3 @@
 // }
 
 
-import React from 'react';
-
-const page = () => {
-  return (
-    <div>
-      all arts
-    </div>
-  );
-};
-
-export default page;

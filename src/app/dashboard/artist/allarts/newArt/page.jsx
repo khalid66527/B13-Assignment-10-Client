@@ -1,6 +1,6 @@
 import React from 'react';
 import NewArtPostForm from './NewArtPostForm';
-import { getLoggedInUserCompany } from '@/lib/api/companies';
+import { getLoggedInUserCompany } from '@/lib/api/companies.server';
 
 const PostArtPage = async () => {
 

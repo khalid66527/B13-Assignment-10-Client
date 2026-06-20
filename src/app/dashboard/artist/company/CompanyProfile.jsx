@@ -4,8 +4,13 @@ import { Button } from "@heroui/react";
 import { Icon } from '@iconify/react';
 import { createCompany } from '@/lib/actions/company';
 
-const CompanyProfile = ({ userData }) => {
-  const [hasProfile, setHasProfile] = useState(false);
+const CompanyProfile = ({ userData ,artistCompany}) => {
+  // Extract existing company data (could be an array from search query or a single object)
+  const companyData = Array.isArray(artistCompany) && artistCompany.length > 0
+    ? artistCompany[0]
+    : (artistCompany && typeof artistCompany === 'object' && !Array.isArray(artistCompany) ? artistCompany : null);
+
+  const [hasProfile, setHasProfile] = useState(!!companyData);
   const [loading, setLoading] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false); // লোগো আপলোড স্টেট
   const fileInputRef = useRef(null);
@@ -13,14 +18,14 @@ const CompanyProfile = ({ userData }) => {
   const categories = ["Art Gallery", "Design Studio", "Corporate Art Buyer", "Auction House", "NFT Platform"];
 
   const [formData, setFormData] = useState({
-    companyName: '',
-    category: '',
-    website: '',
-    location: '',
-    employeeCountRange: '',
-    companyLogo: '', // এখানে ImgBB থেকে আসা ফাইনাল URL স্টোর হবে
-    description: '',
-    userId: userData.id,
+    companyName: companyData?.companyName || '',
+    category: companyData?.category || '',
+    website: companyData?.website || '',
+    location: companyData?.location || '',
+    employeeCountRange: companyData?.employeeCountRange || '',
+    companyLogo: companyData?.companyLogo || '', 
+    description: companyData?.description || '',
+    userId: userData?.id || '',
   });
 
   const handleInputChange = (e) => {
@@ -55,7 +60,7 @@ const CompanyProfile = ({ userData }) => {
       const data = await response.json();
 
       if (data.success) {
-        const imageUrl = data.data.url; // ImgBB থেকে প্রাপ্ত ডাইনামিক ইমেজ লিংক
+        const imageUrl = data.data.url;
         setFormData((prev) => ({ ...prev, companyLogo: imageUrl }));
         console.log("ImgBB Upload Success URL:", imageUrl);
       } else {
@@ -73,7 +78,6 @@ const CompanyProfile = ({ userData }) => {
     setFormData((prev) => ({ ...prev, companyLogo: '' }));
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (uploadingLogo) {
@@ -85,9 +89,13 @@ const CompanyProfile = ({ userData }) => {
     try {
       console.log("Saving Company Profile Data:", formData);
    
-      const payload = await createCompany(formData)
-      if(payload.insertedId){
-        alert('Company Created Successfully !')
+      const payload = await createCompany(formData);
+      if (payload.insertedId) {
+        if (payload.isUpdate) {
+          alert('Company Profile Updated Successfully !');
+        } else {
+          alert('Company Profile Created Successfully !');
+        }
       }
       setHasProfile(true);
     } catch (error) {
@@ -97,7 +105,6 @@ const CompanyProfile = ({ userData }) => {
       setLoading(false);
     }
   };
-
   return (
     <div className="relative min-h-screen bg-[#0A0A0A] text-gray-300 font-sans flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       

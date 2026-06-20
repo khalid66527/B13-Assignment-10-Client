@@ -1,7 +1,14 @@
+import { getUserSession } from "../core/session"
+import { serverFetch } from "../core/server"
 
-const baseUrl = process.env.NEXT_PUBLIC_URL;
+
 export const getArtistCompany = async (userId) => {
 
-    const res = await fetch(`${baseUrl}/api/my/companies?userId=${userId}`)
-    return res.json()
+ return  serverFetch(`/api/my/companies?userId=${userId}`)
+   
+}
+
+export const getLoggedInUserCompany = async()=>{
+    const user =await getUserSession()
+    return getArtistCompany(user?.id)
 }

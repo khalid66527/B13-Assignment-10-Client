@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getCompanyArts } from "@/lib/api/arts";
-// Ensure you have your UI components imported here (Button, Table, Icon, Avatar, Checkbox, Chip, etc.)
-import { Icon } from "@iconify/react"; 
+import { Icon } from "@iconify/react";
 import { Avatar, Button, Checkbox, Table } from "@heroui/react";
 
 export default function ArtistAllArts() {
+
   const [arts, setArts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -16,12 +16,12 @@ export default function ArtistAllArts() {
     direction: "ascending",
   });
 
-  // Fetch data on client side to avoid the 'async client component' error
   useEffect(() => {
     const fetchArts = async () => {
       try {
+        
         const res = await getCompanyArts();
-        // Assuming 'res' returns an array of objects directly, or adjust to res.data if nested
+        console.log("companies 1:",res);
         setArts(res || []);
       } catch (error) {
         console.error("Failed to fetch arts:", error);
@@ -34,7 +34,6 @@ export default function ArtistAllArts() {
   }, []);
 
   const handleDelete = async (id) => {
-    // Add your delete logic here
     console.log("Deleting art with id:", id);
   };
 
@@ -69,7 +68,6 @@ export default function ArtistAllArts() {
       <div className="bg-gradient-to-b from-[#161616]/90 to-[#0F0F0F]/95 border border-[#D4AF37]/15 rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
 
-        {/* Empty State Message (as requested) */}
         {arts.length === 0 ? (
           <div className="text-center py-12 space-y-4">
             <div className="w-16 h-16 rounded-full bg-gray-850 flex items-center justify-center mx-auto border border-[#D4AF37]/10">
@@ -109,9 +107,12 @@ export default function ArtistAllArts() {
                       </Checkbox.Content>
                     </Checkbox>
                   </Table.Column>
-                  <Table.Column allowsSorting id="title">
+
+                  {/* এখানে isRowHeader যোগ করা হয়েছে */}
+                  <Table.Column isRowHeader={true} allowsSorting id="title">
                     Artwork
                   </Table.Column>
+
                   <Table.Column allowsSorting id="category">
                     Category
                   </Table.Column>
@@ -138,8 +139,7 @@ export default function ArtistAllArts() {
                           </Checkbox.Content>
                         </Checkbox>
                       </Table.Cell>
-                      
-                      {/* Image & Title Mapping */}
+
                       <Table.Cell>
                         <div className="flex items-center gap-3 py-1">
                           <Avatar size="md" className="rounded-xl border border-[#D4AF37]/20 shrink-0">
@@ -156,39 +156,32 @@ export default function ArtistAllArts() {
                         </div>
                       </Table.Cell>
 
-                      {/* Category Mapping */}
                       <Table.Cell className="text-sm font-medium text-gray-300">
                         {art.category || "N/A"}
                       </Table.Cell>
 
-                      {/* Date Mapping */}
                       <Table.Cell className="text-sm font-medium text-gray-400">
                         {art.date ? new Date(art.date).toLocaleDateString() : "No Date"}
                       </Table.Cell>
 
-                      {/* Price Mapping */}
                       <Table.Cell className="text-sm font-bold text-[#D4AF37]">
                         ${art.price || "0.00"}
                       </Table.Cell>
 
-                      {/* Actions Mapping (Eye, Edit, Delete) */}
                       <Table.Cell className="text-end pr-4">
                         <div className="flex items-center justify-end gap-1">
-                          {/* Eye (View) */}
                           <Link href={`/dashboard/artist/allarts/${art._id || art.id}`}>
                             <Button isIconOnly size="sm" variant="tertiary" className="hover:text-[#D4AF37] text-gray-400 bg-transparent hover:bg-gray-800">
                               <Icon className="size-4" icon="gravity-ui:eye" />
                             </Button>
                           </Link>
-                          
-                          {/* Edit */}
+
                           <Link href={`/dashboard/artist/allarts/edit/${art._id || art.id}`}>
                             <Button isIconOnly size="sm" variant="tertiary" className="hover:text-[#D4AF37] text-gray-400 bg-transparent hover:bg-gray-800">
                               <Icon className="size-4" icon="gravity-ui:pencil" />
                             </Button>
                           </Link>
-                          
-                          {/* Delete */}
+
                           <Button
                             isIconOnly
                             size="sm"

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Button } from "@heroui/react";
+import Link from 'next/link';
 
 const ArtDetails = ({ allArt, id }) => {
     const [isBookmarked, setIsBookmarked] = useState(false);
@@ -102,13 +103,14 @@ const ArtDetails = ({ allArt, id }) => {
                         </Button>
 
                         {/* Buy Now Button */}
-                        <Button
+                        <Link
+                            href={`/shop/${id}/buyNow`}
                             className="w-full sm:flex-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] hover:brightness-110 text-black font-extrabold tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm"
-                            onClick={() => alert(`Proceeding to checkout for ${title}`)}
+                            
                         >
                             <Icon icon="solar:cart-large-minimalistic-bold" className="size-5" />
                             Buy Now
-                        </Button>
+                        </Link>
                         
                     </div>
 

@@ -4,10 +4,14 @@ import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons'; 
 import { FcGoogle } from 'react-icons/fc';
 import { signIn } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 
 const SigninPage = () => {
+  const searchParams =useSearchParams()
+  
+  const redirectTo = searchParams.get("redirect") || "/"
   const router = useRouter();
+
   const [isVisible, setIsVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [role, setRole] = useState("buyer"); // State for Role Selection
@@ -47,7 +51,7 @@ const SigninPage = () => {
         return;
       }
 
-      console.log("Submitting Signin Data:", formValues);
+      // console.log("Submitting Signin Data:", formValues);
       
       // Dynamic success message
       setSuccessMessage("🎉 Welcome back! You have successfully signed in.");
@@ -56,7 +60,7 @@ const SigninPage = () => {
       setRole("buyer"); // Reset to default role
 
       setTimeout(() => {
-        router.push('/');
+        router.push(redirectTo);
       }, 1000);
     } catch (error) {
       console.error(error);
@@ -110,7 +114,7 @@ const SigninPage = () => {
               />
             </div>
 
-            {/* Role Selection (HeroUI RadioGroup) */}
+            {/* Role Selection (HeroUI RadioGroup)
             <div className="space-y-2 pt-1 pb-1">
               <label className="text-xs font-semibold text-[#D4AF37]/80 ml-1">Sign In As</label>
               <RadioGroup 
@@ -145,7 +149,7 @@ const SigninPage = () => {
                   <Description className="text-xs text-gray-500 mt-1">Manage your artwork</Description>
                 </Radio>
               </RadioGroup>
-            </div>
+            </div> */}
 
             {/* Password */}
             <div className="space-y-1">
@@ -206,7 +210,7 @@ const SigninPage = () => {
           {/* Footer */}
           <p className="text-center text-xs text-gray-500 mt-6">
             Don`t have an account?{" "}
-            <a href="/auth/signup" className="text-[#D4AF37] hover:underline font-medium">
+            <a href={`/auth/signup?redirect=${redirectTo}`} className="text-[#D4AF37] hover:underline font-medium">
               Sign Up
             </a>
           </p>

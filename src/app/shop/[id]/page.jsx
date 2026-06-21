@@ -3,7 +3,7 @@ import ArtDetails from './ArtDetails';
 import { getArtById } from '@/lib/api/arts';
 
 const DetailsPage = async ({ params }) => {
-    // Next.js-এ params অবজেক্টটি ডিরেক্ট ডিস্ট্রাকচার না করে অ্যাওয়েট করা সেফ প্র্যাকটিস
+    
     const { id } = await params; 
     const art = await getArtById(id);
 

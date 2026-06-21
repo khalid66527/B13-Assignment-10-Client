@@ -4,9 +4,12 @@ import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons';
 import { FcGoogle } from 'react-icons/fc';
 import { signUp } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const SignupPage = () => {
+   const searchParams =useSearchParams()
+    
+    const redirectTo = searchParams.get("redirect") || "/"
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
@@ -69,7 +72,7 @@ const SignupPage = () => {
       alert("🎉 Registration successful!");
       e.target.reset();
       setRole("buyer"); // Reset role on success
-      router.push('/auth/signin');
+      router.push(redirectTo);
     } catch (error) {
       console.error("Signup Error:", error);
       alert("❌ Something went wrong.");
@@ -238,7 +241,7 @@ const SignupPage = () => {
           {/* Footer */}
           <p className="text-center text-xs text-gray-500 mt-6">
             Already have an account?{" "}
-            <a href="/auth/signin" className="text-[#D4AF37] hover:underline font-medium">
+            <a href={`/auth/signin?redirect=${redirectTo}`} className="text-[#D4AF37] hover:underline font-medium">
               Sign In
             </a>
           </p>

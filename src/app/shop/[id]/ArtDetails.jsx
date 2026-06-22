@@ -3,11 +3,16 @@ import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Button } from "@heroui/react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { buynowStore } from '@/lib/actions/buynow';
 
-const ArtDetails = ({ allArt, id }) => {
+const ArtDetails = ({ allArt, id, user }) => {
+    console.log('useData', user);
+    const router = useRouter();
+    const [isBuying, setIsBuying] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
+    console.log('buynow data ', allArt);
 
-    // ডাটা না থাকলে সেফটি হ্যান্ডেলিং
     if (!allArt) {
         return (
             <div className="text-center py-20 text-gray-500">
@@ -17,19 +22,59 @@ const ArtDetails = ({ allArt, id }) => {
         );
     }
 
-    const { title, category, price, dimensions, date, image, description } = allArt;
+    const { title, category, price, companyId, companyName, dimensions, date, image, description } = allArt;
 
+    const handleBuyNow = async () => {
+        if (!user) {
+            alert("Please sign in to buy this artwork.");
+            router.push(`/auth/signin?redirect=/shop/${id}/buyNow`);
+            return;
+        }
+        setIsBuying(true); // বাটনে লোডিং স্পিনার দেখাবে
+
+        // ব্যাকএন্ডে পাঠানোর জন্য ডাটা অবজেক্ট তৈরি
+        const artPayload = {
+            id,
+            title,
+            category,
+            price,
+            dimensions,
+            date,
+            image,
+            description,
+            companyName,
+            companyId,
+            buynowerName: user.name || "Unknown Buyer",
+            buynowerEmail: user.email || "No Email",
+        };
+
+        try {
+            const response = await buynowStore(artPayload);
+            setIsBuying(false);
+
+            if (response && (response.insertedId || response.acknowledged)) {
+                alert('সফলভাবে তথ্য সংরক্ষণ করা হয়েছে!');
+                router.push(`/shop/${id}/buyNow`);
+            } else {
+                alert("❌ কিছু একটা সমস্যা হয়েছে: " + (response?.error || "Unknown error"));
+            }
+        } catch (error) {
+            setIsBuying(false);
+            console.error("Error storing purchase:", error);
+            alert("❌ সার্ভারে কানেক্ট করতে সমস্যা হয়েছে।");
+        }
+    };
     return (
         <div className="max-w-6xl mx-auto bg-gradient-to-b from-[#161616]/90 to-[#0F0F0F]/95 backdrop-blur-xl border border-[#D4AF37]/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_0_50px_rgba(212,175,55,0.03)]">
-            
+
             {/* দুই কলাম লেআউট (মোবাইলে সিঙ্গেল কলাম, ট্যাবে/ডেস্কটপে ২ কলাম) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-                
+
                 {/* 📸 বাম পাশ: ইমেজ সেকশন (১২ ভাগের ৫ ভাগ জায়গা নেবে) */}
                 <div className="lg:col-span-5 w-full aspect-[4/5] rounded-3xl overflow-hidden bg-[#1A1A1A] border border-white/5 relative group shadow-2xl">
-                    <img 
-                        src={image || "https://placehold.co/600x800/1a1a1a/ffffff?text=No+Image"} 
-                        alt={title} 
+                    <img
+                        src={image || "https://placehold.co/600x800/1a1a1a/ffffff?text=No+Image"}
+                        alt={title}
                         className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
                     />
                     {/* ক্যাটাগরি ব্যাজ ইমেজের ওপর */}
@@ -40,7 +85,7 @@ const ArtDetails = ({ allArt, id }) => {
 
                 {/* 📝 ডান পাশ: টেক্সট এবং ইনফরমেশন (১২ ভাগের ৭ ভাগ জায়গা নেবে) */}
                 <div className="lg:col-span-7 space-y-6">
-                    
+
                     {/* শিরোনাম ও প্রাইস */}
                     <div className="space-y-2 border-b border-white/5 pb-4">
                         <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -85,33 +130,32 @@ const ArtDetails = ({ allArt, id }) => {
 
                     {/* 🔘 অ্যাকশন বাটনসমূহ */}
                     <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center gap-4">
-                        
+
                         {/* Bookmark Button */}
                         <Button
                             isIconOnly
                             onClick={() => setIsBookmarked(!isBookmarked)}
-                            className={`size-12 rounded-xl border transition-all shrink-0 ${
-                                isBookmarked 
-                                    ? 'bg-[#D4AF37]/10 border-[#D4AF37] text-[#D4AF37]' 
-                                    : 'bg-[#1A1A1A] border-white/5 text-gray-400 hover:text-white hover:bg-[#222]'
-                            }`}
+                            className={`size-12 rounded-xl border transition-all shrink-0 ${isBookmarked
+                                ? 'bg-[#D4AF37]/10 border-[#D4AF37] text-[#D4AF37]'
+                                : 'bg-[#1A1A1A] border-white/5 text-gray-400 hover:text-white hover:bg-[#222]'
+                                }`}
                         >
-                            <Icon 
-                                icon={isBookmarked ? "solar:bookmark-bold" : "solar:bookmark-linear"} 
-                                className="size-5" 
+                            <Icon
+                                icon={isBookmarked ? "solar:bookmark-bold" : "solar:bookmark-linear"}
+                                className="size-5"
                             />
                         </Button>
 
                         {/* Buy Now Button */}
-                        <Link
-                            href={`/shop/${id}/buyNow`}
+                        <Button
+                            isLoading={isBuying}
+                            onClick={handleBuyNow}
                             className="w-full sm:flex-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] hover:brightness-110 text-black font-extrabold tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm"
-                            
                         >
-                            <Icon icon="solar:cart-large-minimalistic-bold" className="size-5" />
+                            {!isBuying && <Icon icon="solar:cart-large-minimalistic-bold" className="size-5" />}
                             Buy Now
-                        </Link>
-                        
+                        </Button>
+
                     </div>
 
                 </div>

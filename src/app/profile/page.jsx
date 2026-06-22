@@ -16,9 +16,12 @@ function Profile() {
 
   useEffect(() => {
     if (user) {
-      setName(user.name || '');
-      setImage(user.image || '');
-      setEmail(user.email || '');
+      const timer = setTimeout(() => {
+        setName(user.name || '');
+        setImage(user.image || '');
+        setEmail(user.email || '');
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [user]);
 

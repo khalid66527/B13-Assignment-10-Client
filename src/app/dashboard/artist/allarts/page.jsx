@@ -20,8 +20,8 @@ export default function ArtistAllArts() {
 
   useEffect(() => {
     if (!isSessionPending && !session?.user?.id) {
-      setIsLoading(false);
-      return;
+      const timer = setTimeout(() => setIsLoading(false), 0);
+      return () => clearTimeout(timer);
     }
 
     if (!session?.user?.id) return;

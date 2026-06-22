@@ -5,6 +5,7 @@ import { getArtById } from '@/lib/api/arts';
 import { getBuynowByBuynower } from '@/lib/api/buynow';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
+import { getPlanById } from '@/lib/api/plans';
 
 const BuyNow = async ({ params }) => {
     const { id } = await params;
@@ -12,15 +13,14 @@ const BuyNow = async ({ params }) => {
     const artworkData = await getArtById(id);
 
     // ধরি ব্যাকএন্ড থেকে এই ইউজারের আগের কেনাকাটার লিস্ট আসছে
-    const buynowerPurchase = await getBuynowByBuynower() || []; 
+    const buynowerPurchase = user ? (await getBuynowByBuynower(user.id) || []) : [];
 
-    const plan = {
-        name: 'Free',
-        maxPurchaseMoth: 3
-    };
+    const plan = user ? await getPlanById(user.plan || "buynower_free") : null;
+   
+    console.log("maxPurchaseMoth",plan);
 
     const currentPurchases = buynowerPurchase.length;
-    const maxPurchases = plan.maxPurchaseMoth;
+    const maxPurchases = plan?.maxPurchaseMoth || 3;
     const isLimitExceeded = currentPurchases >= maxPurchases;
     
     // প্রোগ্রেস বারের পার্সেন্টেজ হিসাব
@@ -44,7 +44,7 @@ const BuyNow = async ({ params }) => {
                                 <div className="flex items-center gap-2">
                                     <h2 className="text-lg font-bold text-white">Purchase Limit Tracker</h2>
                                     <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#D4AF37]/10 text-[#FFE58F] border border-[#D4AF37]/20">
-                                        {plan.name} Plan
+                                        {plan?.name || "Free"} Plan
                                     </span>
                                 </div>
                                 <p className="text-xs text-gray-500 mt-1">
@@ -88,7 +88,7 @@ const BuyNow = async ({ params }) => {
                             Monthly Purchase Limit Reached!
                         </h3>
                         <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed mb-6">
-                            You`ve already purchased <span className="text-red-400 font-bold">{currentPurchases} arts</span> this month under your <span className="text-white font-semibold">{plan.name} account</span>. Upgrade your plan to get unlimited lifetime access.
+                                    You`ve already purchased <span className="text-red-400 font-bold">{currentPurchases} arts</span> this month under your <span className="text-white font-semibold">{plan?.name || "Free"} account</span>. Upgrade your plan to get unlimited lifetime access.
                         </p>
                         
                         <Link

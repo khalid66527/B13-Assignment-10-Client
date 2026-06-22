@@ -329,15 +329,15 @@ export default function CustomHeader() {
             </div>
             <div>
               <p className="text-sm text-gray-400 mb-2 font-sans tracking-widest uppercase">Want to Work with Us?</p>
-              <a href="/contact" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">
+              <Link href="/contact" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">
                 Send Brief <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </a>
+              </Link>
             </div>
             <div>
               <p className="text-sm text-gray-400 mb-2 font-sans tracking-widest uppercase">Want to Buy?</p>
-              <a href="/shop" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">
+              <Link href="/shop" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">
                 Go to Shop <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

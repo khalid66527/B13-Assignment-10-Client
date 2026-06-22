@@ -32,7 +32,7 @@ const ArtDetails = ({ allArt, id, user }) => {
         }
         setIsBuying(true); // বাটনে লোডিং স্পিনার দেখাবে
 
-        // ব্যাকএন্ডে পাঠানোর জন্য ডাটা অবজেক্ট তৈরি
+        
         const artPayload = {
             id,
             title,

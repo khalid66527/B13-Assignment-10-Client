@@ -26,6 +26,8 @@ const SignupPage = () => {
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData.entries());
 
+    // const plan = role ==='buyer'? 'buynower_free': 'buynower_free'
+
     const password = formValues.password;
 
     // Password Complexity Validation (like "A1khalid")
@@ -58,7 +60,9 @@ const SignupPage = () => {
         name: formValues.fullName,
         email: formValues.email,
         password: formValues.password,
-        role: role, // RadioGroup state
+        role: role,
+        plan:'buynower_free'
+        
       });
 
       if (error) {

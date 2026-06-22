@@ -28,6 +28,9 @@ export const auth = betterAuth({
         type: "string",
         required: false,
         defaultValue: "buyer"
+      },
+      plan:{
+        defaultValue: "buynower_free"
       }
     }
   },

@@ -25,7 +25,7 @@ const BuyNowPage = ({ user, artwork, id }) => {
         );
     }
 
-    // ২. আর্টিস্ট রোল হলে অ্যাক্সেস ডিনাইড শো করা
+    
     if (user.role === "artist") {
         return (
             <div className="min-h-[70vh] flex items-center justify-center bg-[#0A0A0A] px-4">

@@ -46,6 +46,7 @@ const ArtDetails = ({ allArt, id, user }) => {
             companyId,
             buynowerName: user.name || "Unknown Buyer",
             buynowerEmail: user.email || "No Email",
+            buynowerId: user.id || "No Id",
         };
 
         try {

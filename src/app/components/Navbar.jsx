@@ -28,15 +28,7 @@ export default function CustomHeader() {
     return () => document.removeEventListener("click", handleClose);
   }, [isProfileOpen]);
 
-  // useEffect(() => {
-  //   const savedTheme = localStorage.getItem("theme") || "dark";
-  //   setTheme(savedTheme);
-  //   if (savedTheme === "dark") {
-  //     document.documentElement.classList.add("dark");
-  //   } else {
-  //     document.documentElement.classList.remove("dark");
-  //   }
-  // }, []);
+
 
   const toggleTheme = (e) => {
     e.stopPropagation();
@@ -281,15 +273,15 @@ export default function CustomHeader() {
       {/* --- HERO SECTION / DYNAMIC PAGE TITLE --- */}
 
       {/* This creates the large "About Us" style text centered below the nav */}
-      <div className="flex flex-1 items-center justify-center w-full pb-10 relative z-10">
+      {/* <div className="flex flex-1 items-center justify-center w-full pb-10 relative z-10">
         <div className="flex flex-col items-center gap-4 animate-fadeIn">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-[#e8dcb8] tracking-wide text-center drop-shadow-lg">
             {pageTitle}
           </h1>
-          {/* Optional: The small arrow below the text as seen in the image */}
+          
           <ChevronDown width={24} height={24} className="text-[#e8dcb8] mt-2 opacity-80" />
         </div>
-      </div>
+      </div> */}
 
       {/* --- MOBILE MENU --- */}
       <div 

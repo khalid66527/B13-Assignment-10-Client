@@ -13,9 +13,9 @@ const BuyNow = async ({ params }) => {
     const artworkData = await getArtById(id);
 
     // ধরি ব্যাকএন্ড থেকে এই ইউজারের আগের কেনাকাটার লিস্ট আসছে
-    const buynowerPurchase = user ? (await getBuynowByBuynower(user.id) || []) : [];
+    const buynowerPurchase = await getBuynowByBuynower(user.id) ;
 
-    const plan = user ? await getPlanById(user.plan || "buynower_free") : null;
+    const plan =  await getPlanById(user?.plan)
    
     console.log("maxPurchaseMoth",plan);
 

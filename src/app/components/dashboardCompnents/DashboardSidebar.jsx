@@ -12,8 +12,10 @@ const DashboardSidebar = () => {
   const user = session?.user;
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  // console.log("user data :",user);
 
-  const menuItems = [
+
+  const artistDashboard = [
     {
       title: "Dashboard Home",
       path: "/dashboard/artist",
@@ -34,8 +36,48 @@ const DashboardSidebar = () => {
       path: "/dashboard/artist/company",
       icon: "solar:user-circle-bold-duotone",
     },
-  
+    {
+      title: "Profile Management",
+      path: "/dashboard/artist/profile",
+      icon: "solar:user-circle-bold-duotone",
+    },
+
   ];
+
+  const userDashboard = [
+    {
+      title: "Profile Management",
+      path: "/dashboard/user/profile",
+      icon: "solar:user-circle-bold-duotone",
+    },
+    {
+      title: "Purchase History",
+      path: "/dashboard/user/purchase-history",
+      icon: "solar:history-bold-duotone",
+    },
+    {
+      title: "Bought Artworks",
+      path: "/dashboard/user/bought-arts",
+      icon: "solar:palette-round-bold-duotone",
+    }
+  ]
+
+
+
+  const menuItems =
+  user?.role === "artist"
+    ? artistDashboard
+    : user?.role === "buyer"
+    ? userDashboard
+    : [];
+
+
+    const panelTitle =
+  user?.role === "artist"
+    ? "Artist Panel"
+    : user?.role === "buyer"
+    ? "User Panel"
+    : "Dashboard";
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -58,7 +100,7 @@ const DashboardSidebar = () => {
         </div>
         <div>
           <h1 className="font-serif text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFE58F] via-[#D4AF37] to-[#AA7C11]">
-            Artist Panel
+           {panelTitle}
           </h1>
           <p className="text-[10px] tracking-widest text-gray-500 uppercase">ArtHub Creator</p>
         </div>
@@ -94,17 +136,15 @@ const DashboardSidebar = () => {
               key={item.path}
               href={item.path}
               onClick={() => setIsOpen(false)}
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                active
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 group ${active
                   ? "bg-[#D4AF37]/10 text-[#D4AF37] border-l-4 border-[#D4AF37] font-semibold"
                   : "hover:bg-[#1a1b16] hover:text-white"
-              }`}
+                }`}
             >
               <Icon
                 icon={item.icon}
-                className={`text-xl transition-transform duration-300 group-hover:scale-110 ${
-                  active ? "text-[#D4AF37]" : "text-gray-500 group-hover:text-[#D4AF37]"
-                }`}
+                className={`text-xl transition-transform duration-300 group-hover:scale-110 ${active ? "text-[#D4AF37]" : "text-gray-500 group-hover:text-[#D4AF37]"
+                  }`}
               />
               <span className="text-sm">{item.title}</span>
             </Link>

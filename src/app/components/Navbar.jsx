@@ -65,7 +65,7 @@ export default function CustomHeader() {
     if (path.startsWith("/exhibitions")) return "Exhibitions";
     if (path.startsWith("/contact")) return "Contact";
     if (path.startsWith("/team")) return "Our Team";
-    if (path.startsWith("/pricing")) return "Pricing";
+    if (path.startsWith("/plans")) return "Pricing";
     
     // Fallback: Remove slashes, replace dashes with spaces, and capitalize
     const formatted = path.replace(/^\//, "").replace(/-/g, " ");
@@ -126,7 +126,7 @@ export default function CustomHeader() {
               <div className="absolute top-[70px] left-0 min-w-[180px] bg-[#1f2019] border border-[#3a3c2f] shadow-xl rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                 <Link href="/about" className={dropdownItemClass}>About Us</Link>
                 <Link href="/team" className={dropdownItemClass}>Our Team</Link>
-                <Link href="/pricing" className={dropdownItemClass}>Pricing</Link>
+                <Link href="/plans" className={dropdownItemClass}>Pricing</Link>
               </div>
             </li>
 

@@ -64,7 +64,7 @@ const BuyNowPage = ({ user, artwork, id }) => {
     ] : [];
 
     const subtotal = cartItems.reduce((acc, item) => acc + Number(item.price || 0), 0);
-    const shipping = cartItems.length > 0 ? 25 : 0; 
+    const shipping = cartItems.length > 0 ? 0 : 0; 
     const totalAmount = subtotal + shipping;
 
     const handleCheckoutClick = () => {

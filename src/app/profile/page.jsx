@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSession, authClient } from '@/lib/auth-client';
+import { useSession, authClient } from "@/lib/auth-client"
 import { Button } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 

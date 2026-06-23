@@ -1,11 +1,11 @@
 import React from 'react';
 import BuyNowPage from './BuyNowPage';
 import { getUserSession } from '@/lib/core/session';
-import { getArtById } from '@/lib/api/arts';
 import { getBuynowByBuynower } from '@/lib/api/buynow';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { getPlanById } from '@/lib/api/plans';
+import { getArtById } from '@/lib/api/arts';
 
 const BuyNow = async ({ params }) => {
     const { id } = await params;

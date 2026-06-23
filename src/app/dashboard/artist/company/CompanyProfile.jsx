@@ -26,6 +26,8 @@ const CompanyProfile = ({ userData ,artistCompany}) => {
     companyLogo: companyData?.companyLogo || '', 
     description: companyData?.description || '',
     userId: userData?.id || '',
+    userName: userData?.name || '',
+    userEmail: userData?.email || '',
   });
 
   const handleInputChange = (e) => {

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons'; 
 import { FcGoogle } from 'react-icons/fc';
-import { signIn } from '@/lib/auth-client';
+import { signIn }  from "@/lib/auth-client"
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 
 const SigninPage = () => {

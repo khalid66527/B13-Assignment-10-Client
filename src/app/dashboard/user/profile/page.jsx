@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@heroui/react';
 import { useRouter } from 'next/navigation';
-import { authClient, useSession } from '@/lib/auth-client';
+import { authClient, useSession } from "@/lib/auth-client"
 
 function Profile() {
   const { data: session, isPending } = useSession();

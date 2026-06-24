@@ -57,14 +57,14 @@ export function PurchaseTable({ data }) {
                         <Avatar.Fallback><Icon icon="solar:gallery-bold" /></Avatar.Fallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-white group-hover:text-[#FFE58F]">{item.title}</span>
+                        <span className="text-sm font-bold  group-hover:text-[#FFE58F]">{item.title}</span>
                         <span className="text-xs text-gray-500 uppercase tracking-wider">{item.category}</span>
                       </div>
                     </div>
                   </Table.Cell>
 
                   {/* কোম্পানির নাম */}
-                  <Table.Cell className="text-gray-300 font-medium">
+                  <Table.Cell className="text-gray-600 font-medium">
                     {item.companyName}
                   </Table.Cell>
 

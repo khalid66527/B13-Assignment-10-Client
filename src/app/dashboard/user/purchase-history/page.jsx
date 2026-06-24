@@ -7,7 +7,7 @@ import { Icon } from '@iconify/react';
 const Page = async () => {
     const user = await getUserSession();
     const myPurchaseData = (await getBuynowByBuynower(user?.id)) || [];
-
+console.log("object",myPurchaseData);
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto space-y-8">

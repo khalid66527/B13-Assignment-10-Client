@@ -1,11 +1,23 @@
 import React from 'react';
+import ArtworksTable from './ArtworksTable';
+import { getCompanyArts } from '@/lib/api/arts';
 
-const page = () => {
+const ManageArtworks = async () => {
+    let artworks = [];
+    let fetchError = false;
+
+    try {
+        artworks = await getCompanyArts();
+    } catch (error) {
+        console.error("Failed to fetch artworks from backend:", error);
+        fetchError = true;
+    }
+
     return (
-        <div>
-            manage-artworks
+        <div className="space-y-8">
+            <ArtworksTable initialArtworks={artworks || []} fetchError={fetchError} />
         </div>
     );
 };
 
-export default page;
+export default ManageArtworks;

@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons';
 import { FcGoogle } from 'react-icons/fc';
 import { signUp } from '@/lib/auth-client';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const SignupPage = () => {
+const SignupForm = () => {
    const searchParams =useSearchParams()
     
     const redirectTo = searchParams.get("redirect") || "/"
@@ -253,6 +253,18 @@ const SignupPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const SignupPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center text-gray-500 font-sans">
+        Loading...
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 };
 

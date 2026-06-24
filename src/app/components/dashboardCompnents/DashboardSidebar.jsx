@@ -77,11 +77,7 @@ const DashboardSidebar = () => {
     path: "/dashboard/admin/transactions",
     icon: "solar:card-transfer-bold-duotone",
   },
-  {
-    title: "Analytics Overview",
-    path: "/dashboard/admin/analytics",
-    icon: "solar:chart-2-bold-duotone",
-  },
+  
   {
     title: "Charts",
     path: "/dashboard/admin/charts",

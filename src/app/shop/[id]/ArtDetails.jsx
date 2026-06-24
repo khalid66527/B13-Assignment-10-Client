@@ -50,19 +50,12 @@ const ArtDetails = ({ allArt, id, user }) => {
         };
 
         try {
-            const response = await buynowStore(artPayload);
             setIsBuying(false);
-
-            if (response && (response.insertedId || response.acknowledged)) {
-                alert('সফলভাবে তথ্য সংরক্ষণ করা হয়েছে!');
-                router.push(`/shop/${id}/buyNow`);
-            } else {
-                alert("❌ কিছু একটা সমস্যা হয়েছে: " + (response?.error || "Unknown error"));
-            }
+            router.push(`/shop/${id}/buyNow`);
         } catch (error) {
             setIsBuying(false);
-            console.error("Error storing purchase:", error);
-            alert("❌ সার্ভারে কানেক্ট করতে সমস্যা হয়েছে।");
+            console.error("Error navigating:", error);
+            alert("❌ কিছু একটা সমস্যা হয়েছে।");
         }
     };
     return (

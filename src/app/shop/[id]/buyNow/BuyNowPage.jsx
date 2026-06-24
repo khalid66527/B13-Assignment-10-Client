@@ -7,6 +7,8 @@ import { Icon } from '@iconify/react';
 import { Button } from '@heroui/react';
 
 const BuyNowPage = ({ user, artwork, id }) => {
+    console.log('user' , user);
+    console.log('artwork' , artwork);
     const router = useRouter();
     const [toast, setToast] = useState({ show: false, message: '' });
 
@@ -200,13 +202,28 @@ const BuyNowPage = ({ user, artwork, id }) => {
                             </div>
                         </div>
 
-                        <Button
-                            onClick={handleCheckoutClick}
-                            className="w-full bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black font-black tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm"
-                        >
-                            <Icon icon="solar:card-transfer-bold" className="size-5" />
-                            Proceed to Checkout
-                        </Button>
+                        <form action="/api/checkout_sessions" method="POST" className="w-full">
+                            <input type="hidden" name="checkout_type" value="purchase" />
+                            <input type="hidden" name="art_id" value={artwork._id || id} />
+                            <input type="hidden" name="title" value={artwork.title || ""} />
+                            <input type="hidden" name="price" value={artwork.price || 0} />
+                            <input type="hidden" name="image" value={artwork.image || ""} />
+                            <input type="hidden" name="artistEmail" value={artwork.artistEmail || ""} />
+                            <input type="hidden" name="artistName" value={artwork.artistName || ""} />
+                            <input type="hidden" name="companyName" value={artwork.companyName || ""} />
+                            <input type="hidden" name="companyId" value={artwork.companyId || ""} />
+                            <input type="hidden" name="category" value={artwork.category || ""} />
+                            <input type="hidden" name="dimensions" value={artwork.dimensions || ""} />
+                            <input type="hidden" name="date" value={artwork.date || ""} />
+                            <input type="hidden" name="description" value={artwork.description || ""} />
+                            <Button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black font-black tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm"
+                            >
+                                <Icon icon="solar:card-transfer-bold" className="size-5" />
+                                Proceed to Checkout
+                            </Button>
+                        </form>
 
                         <p className="text-[11px] text-center text-gray-500 leading-relaxed">
                             By clicking proceed, you agree to our terms of digital and custom physical artwork distribution rights.

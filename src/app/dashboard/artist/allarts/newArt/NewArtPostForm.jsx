@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import { createArt } from "@/lib/actions/artstor";
 import { redirect } from "next/navigation";
 
-export default function NewArtPostForm({company}) {
+export default function NewArtPostForm({company ,user}) {
   // console.log("CompanyjData",company);
   const [companyObj = {}] = company || [];
 
@@ -26,6 +26,8 @@ export default function NewArtPostForm({company}) {
     companyName: companyObj.companyName,
     companyLogo:companyObj.companyLogo,
     companyId:companyObj._id,
+    artistName:user.name,
+    artistEmail:user.email,
 
    }
 

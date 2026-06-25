@@ -62,8 +62,6 @@ export default function CustomHeader() {
     if (path.startsWith("/about")) return "About Us";
     if (path.startsWith("/shop")) return "Shop";
     if (path.startsWith("/collections")) return "Collections";
-    if (path.startsWith("/exhibitions")) return "Exhibitions";
-    if (path.startsWith("/contact")) return "Contact";
     if (path.startsWith("/team")) return "Our Team";
     if (path.startsWith("/plans")) return "Pricing";
     
@@ -106,16 +104,10 @@ export default function CustomHeader() {
             
             {/* Tailwind Group-Hover Dropdown for HOME */}
             <li className="relative group h-full flex items-center">
-              <span className={`${linkClass} gap-1`}>
-                Home <ChevronDown width={14} className="group-hover:rotate-180 transition-transform duration-300" />
-              </span>
-              <div className="absolute top-[70px] left-0 min-w-[200px] bg-[#1f2019] border border-[#3a3c2f] shadow-xl rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                <Link href="/shop" className={dropdownItemClass}>Shop</Link>
-                <Link href="/collections" className={dropdownItemClass}>Collections</Link>
-                <Link href="/exhibitions" className={dropdownItemClass}>Exhibitions</Link>
-                <Link href="/contact" className={dropdownItemClass}>Contact</Link>
-                <Link href="/top-art-hall" className={dropdownItemClass}>Top Art Hall</Link>
-              </div>
+              <Link href="/" className={`${linkClass} gap-1`}>
+                Home 
+              </Link>
+              
             </li>
 
             {/* Pages Dropdown */}
@@ -131,7 +123,7 @@ export default function CustomHeader() {
             </li>
 
             {/* Exhibitions Dropdown */}
-            <li className="relative group h-full flex items-center">
+            {/* <li className="relative group h-full flex items-center">
               <span className={`${linkClass} gap-1`}>
                 Exhibitions <ChevronDown width={14} className="group-hover:rotate-180 transition-transform duration-300" />
               </span>
@@ -139,11 +131,10 @@ export default function CustomHeader() {
                 <Link href="/exhibitions/list" className={dropdownItemClass}>List</Link>
                 <Link href="/exhibitions/calendar" className={dropdownItemClass}>Calendar</Link>
               </div>
-            </li>
+            </li> */}
 
             <li className="h-full flex items-center"><Link href="/shop" className={`${linkClass} ${isActive("/shop") ? activeClass : ""}`}>Shop</Link></li>
             <li className="h-full flex items-center"><Link href="/collections" className={`${linkClass} ${isActive("/collections") ? activeClass : ""}`}>Collections</Link></li>
-            <li className="h-full flex items-center"><Link href="/contact" className={`${linkClass} ${isActive("/contact") ? activeClass : ""}`}>Contact_Us</Link></li>
 
             {/* Dashboard Dropdown (Role Based) */}
             {userRole && (
@@ -291,7 +282,7 @@ export default function CustomHeader() {
       >
         <div className="flex flex-col md:flex-row p-8 gap-10">
           <ul className="flex flex-col gap-6 w-full md:w-1/2">
-            {["Home", "Pages", "Exhibitions", "Shop", "Collections", "Contact Us", "Dashboard"].map((item) => (
+            {["About", "Shop",'Team', "Collections","Plans" ].map((item) => (
               <li key={item}>
                 <Link
                   href={`/${item.toLowerCase().replace(" ", "-")}`}
@@ -319,12 +310,7 @@ export default function CustomHeader() {
                 info@website.com
               </a>
             </div>
-            <div>
-              <p className="text-sm text-gray-400 mb-2 font-sans tracking-widest uppercase">Want to Work with Us?</p>
-              <Link href="/contact" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">
-                Send Brief <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </Link>
-            </div>
+            
             <div>
               <p className="text-sm text-gray-400 mb-2 font-sans tracking-widest uppercase">Want to Buy?</p>
               <Link href="/shop" className="text-lg text-[#e8dcb8] flex items-center gap-2 hover:text-white transition-colors group">

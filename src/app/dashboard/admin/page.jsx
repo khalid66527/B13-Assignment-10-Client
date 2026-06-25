@@ -51,7 +51,7 @@ const AdminDashboardHomePage = async () => {
         type: 'purchase',
         detail: `Artwork bought by ${p.userEmail}`,
         amount: Number(p.price) || 0,
-        date: new Date(p.purchaseDate || Date.now())
+        date: new Date(p?.purchaseDate || Date.now())
     }));
 
     const formattedSubscriptions = subscriptions.map(s => {

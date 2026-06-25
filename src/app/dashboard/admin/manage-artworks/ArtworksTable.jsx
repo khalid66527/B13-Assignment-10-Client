@@ -171,10 +171,10 @@ const ArtworksTable = ({ initialArtworks = [], fetchError = false }) => {
                                                             </Avatar.Fallback>
                                                         </Avatar>
                                                         <div className="flex flex-col">
-                                                            <span className="text-sm font-semibold text-gray-800  ">
+                                                            <span className="text-sm font-semibold text-gray-200">
                                                                Title:  {art.title || "Untitled"}
                                                             </span>
-                                                            <span className="text-xs text-gray-700 font-mono">
+                                                            <span className="text-xs text-gray-500 font-mono">
                                                                 ID: {artId}
                                                             </span>
                                                         </div>
@@ -182,7 +182,7 @@ const ArtworksTable = ({ initialArtworks = [], fetchError = false }) => {
                                                 </Table.Cell>
 
                                                 {/* Category */}
-                                                <Table.Cell className="text-gray-600 text-sm">
+                                                <Table.Cell className="text-gray-400 text-sm">
                                                     {art.category || "N/A"}
                                                 </Table.Cell>
 
@@ -192,7 +192,7 @@ const ArtworksTable = ({ initialArtworks = [], fetchError = false }) => {
                                                         <span className="text-sm font-medium text-white">
                                                             {art.artistName || "Unknown"}
                                                         </span>
-                                                        <span className="text-xs text-gray-700">
+                                                        <span className="text-xs text-gray-400">
                                                             {art.artistEmail || "No Email"}
                                                         </span>
                                                     </div>
@@ -213,7 +213,7 @@ const ArtworksTable = ({ initialArtworks = [], fetchError = false }) => {
                                                             color="danger"
                                                             disabled={isDeleting}
                                                             onClick={() => handleDelete(artId, art.title)}
-                                                            className="text-red-700 hover:text-red-600 hover:bg-red-500/10 min-w-8 w-8 h-8 rounded-lg"
+                                                            className="text-red-500 hover:text-red-400 hover:bg-red-500/10 min-w-8 w-8 h-8 rounded-lg"
                                                         >
                                                             {isDeleting ? (
                                                                 <Icon icon="eos-icons:loading" className="size-4 animate-spin text-red-500" />

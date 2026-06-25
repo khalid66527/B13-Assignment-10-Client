@@ -72,8 +72,7 @@ const UsersTable = ({ initialUsers = [], fetchError = false }) => {
     }, [filteredUsers, sortDescriptor]);
 
     return (
-        <div className="space-y-6">
-            {/* 🏷️ পেজ হেডার */}
+        <div className="space-y-6">         
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
                 <div className="flex items-center gap-3.5">
                     <div className="p-3 bg-[#121212] rounded-xl border border-white/[0.06] text-white">
@@ -109,7 +108,7 @@ const UsersTable = ({ initialUsers = [], fetchError = false }) => {
                 </div>
             )}
 
-            {/* 🔍 সার্চ ও ফিল্টার বার */}
+           
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
                     <input
@@ -236,7 +235,7 @@ const UsersTable = ({ initialUsers = [], fetchError = false }) => {
                     </Table>
                 </div>
             ) : (
-                /* এম্পটি স্টেট */
+                
                 <div className="text-center py-20 bg-[#121212] border border-white/[0.06] rounded-2xl">
                     <Icon icon="solar:users-group-two-rounded-linear" className="size-10 mx-auto text-gray-600 mb-3" />
                     <h3 className="text-sm font-semibold text-white">No Users Found</h3>

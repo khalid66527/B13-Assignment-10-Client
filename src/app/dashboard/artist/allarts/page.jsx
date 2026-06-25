@@ -108,7 +108,7 @@ export default function ArtistAllArts() {
         </Link>
       </div>
 
-      {/* Artworks List (Card Grid) */}
+      {/* Artworks List (Table) */}
       {arts.length === 0 ? (
         <div className="bg-gradient-to-b from-[#161616]/90 to-[#0F0F0F]/95 border border-[#D4AF37]/15 rounded-3xl p-12 text-center space-y-4 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
@@ -128,98 +128,113 @@ export default function ArtistAllArts() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {arts.map((art) => (
-            <div
-              key={art._id || art.id}
-              className="group bg-gradient-to-b from-[#161616]/90 to-[#0F0F0F]/95 border border-[#D4AF37]/15 rounded-3xl overflow-hidden hover:border-[#D4AF37]/45 transition-all duration-300 shadow-xl hover:shadow-[0_8px_30px_rgba(212,175,55,0.08)] flex flex-col h-full relative"
-            >
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="bg-[#121212]/90 border border-[#D4AF37]/15 rounded-2xl overflow-hidden shadow-xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-[#1A1A1A] border-b border-[#D4AF37]/20 text-gray-400 font-semibold uppercase tracking-wider text-xs">
+                <tr>
+                  <th className="px-6 py-4">Artwork</th>
+                  <th className="px-6 py-4">Details</th>
+                  <th className="px-6 py-4">Category & Date</th>
+                  <th className="px-6 py-4">Dimensions</th>
+                  <th className="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#D4AF37]/10">
+                {arts.map((art) => (
+                  <tr 
+                    key={art._id || art.id} 
+                    className="hover:bg-[#D4AF37]/5 transition-colors duration-200 group"
+                  >
+                    {/* Image */}
+                    <td className="px-6 py-4">
+                      <div className="w-20 h-14 rounded-lg overflow-hidden bg-black border border-[#D4AF37]/10 flex items-center justify-center shrink-0">
+                        {art.image ? (
+                          <img
+                            src={art.image}
+                            alt={art.title || "Artwork image"}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        ) : (
+                          <span className="text-[10px] text-gray-600 uppercase">No Img</span>
+                        )}
+                      </div>
+                    </td>
 
-              {/* Artwork Image Container */}
-              <div className="relative aspect-video w-full overflow-hidden bg-black flex items-center justify-center border-b border-[#D4AF37]/10">
-                {art.image ? (
-                  <img
-                    src={art.image}
-                    alt={art.title || "Artwork image"}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-[#1A1A1A] flex items-center justify-center text-gray-500 text-sm">
-                    No Image Available
-                  </div>
-                )}
-                {/* Price badge */}
-                <div className="absolute bottom-3 right-3 bg-black/85 border border-[#D4AF37]/25 rounded-full px-3.5 py-1 text-xs font-bold text-[#D4AF37] shadow-lg">
-                  ${art.price || "0.00"}
-                </div>
-              </div>
+                    {/* Title & Description */}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-base font-bold text-white group-hover:text-[#D4AF37] transition-colors duration-300">
+                          {art.title || "Untitled"}
+                        </span>
+                        {art.description ? (
+                          <span className="text-xs text-gray-500 max-w-[200px] truncate mt-1">
+                            {art.description}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-600 italic mt-1">No description</span>
+                        )}
+                      </div>
+                    </td>
 
-              {/* Card Details Body */}
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h4 className="text-lg font-bold text-white group-hover:text-[#D4AF37] transition-colors duration-300 truncate">
-                    {art.title || "Untitled"}
-                  </h4>
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs font-semibold text-gray-400 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-0.5">
-                      {art.category || "General"}
-                    </span>
-                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                      <Icon icon="solar:calendar-linear" className="text-sm text-gray-550" />
-                      {art.date ? new Date(art.date).toLocaleDateString() : "No Date"}
-                    </span>
-                  </div>
-                  {art.description && (
-                    <p className="text-xs text-gray-400 mt-3 line-clamp-2 leading-relaxed">
-                      {art.description}
-                    </p>
-                  )}
-                </div>
+                    {/* Category & Date */}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-2 items-start">
+                        <span className="text-xs font-semibold text-gray-300 bg-gray-800/80 border border-gray-700/50 rounded-full px-2.5 py-1">
+                          {art.category || "General"}
+                        </span>
+                        <span className="text-xs text-gray-500 flex items-center gap-1.5 mt-1">
+                          <Icon icon="solar:calendar-linear" className="text-sm" />
+                          {art.date ? new Date(art.date).toLocaleDateString() : "No Date"}
+                        </span>
+                      </div>
+                    </td>
 
-                {/* Card Actions Footer */}
-                <div className="pt-4 border-t border-[#D4AF37]/10 flex items-center justify-between">
-                  <div className="text-[11px] text-gray-500 font-mono">
-                    {art.dimensions || "Dimensions N/A"}
-                  </div>
+                    {/* Price & Dimensions */}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col space-y-1">
+                         <span className="text-sm font-bold text-[#D4AF37]">
+                          ${art.price || "0.00"}
+                        </span>
+                        <span className="text-[11px] text-gray-500 font-mono">
+                          {art.dimensions || "Dimensions N/A"}
+                        </span>
+                      </div>
+                    </td>
 
-                  <div className="flex items-center gap-1.5">
-                    {/* View Button */}
-                    <Link href={`/dashboard/artist/allarts/${art._id || art.id}`}>
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        className="text-gray-400 hover:text-[#D4AF37] bg-transparent hover:bg-gray-800/80 rounded-xl"
-                      >
-                        <Icon className="size-4.5" icon="gravity-ui:eye" />
-                      </Button>
-                    </Link>
+                    {/* Actions */}
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {/* View Button */}
+                      
 
-                    {/* Edit Button */}
-                    <Link href={`/dashboard/artist/allarts/edit/${art._id || art.id}`}>
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        className="text-gray-400 hover:text-[#D4AF37] bg-transparent hover:bg-gray-800/80 rounded-xl"
-                      >
-                        <Icon className="size-4.5" icon="gravity-ui:pencil" />
-                      </Button>
-                    </Link>
+                        {/* Edit Button */}
+                        <Link href={`/dashboard/artist/allarts/edit/${art._id || art.id}`}>
+                          <Button
+                            isIconOnly
+                            size="sm"
+                            className="text-gray-400 hover:text-blue-400 bg-gray-800/40 hover:bg-gray-800 rounded-xl"
+                          >
+                            <Icon className="text-lg" icon="gravity-ui:pencil" />
+                          </Button>
+                        </Link>
 
-                    {/* Delete Button */}
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      onClick={() => openDeleteConfirm(art._id || art.id, art.title)}
-                      className="text-red-400 hover:text-white bg-transparent hover:bg-red-500/20 rounded-xl"
-                    >
-                      <Icon className="size-4.5" icon="gravity-ui:trash-bin" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                        {/* Delete Button */}
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          onClick={() => openDeleteConfirm(art._id || art.id, art.title)}
+                          className="text-gray-400 hover:text-red-500 bg-gray-800/40 hover:bg-red-500/10 rounded-xl"
+                        >
+                          <Icon className="text-lg" icon="gravity-ui:trash-bin" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

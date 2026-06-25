@@ -14,6 +14,7 @@ const BuyNow = async ({ params }) => {
 
     // ধরি ব্যাকএন্ড থেকে এই ইউজারের আগের কেনাকাটার লিস্ট আসছে
     const buynowerPurchase = await getBuynowByBuynower(user.id) ;
+    console.log('object',buynowerPurchase );
 
     const plan =  await getPlanById(user?.plan)
    

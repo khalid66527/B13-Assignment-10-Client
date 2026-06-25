@@ -1,4 +1,3 @@
-import { betterAuth } from "better-auth";
 import { headers } from "next/headers";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";

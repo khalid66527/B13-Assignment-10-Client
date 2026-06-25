@@ -1,9 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-
 import ArtCard from '../components/shop/ArtCard';
 import FilterNavbar from '../components/shop/FilterNavbar';
-
 
 const AllArtsShopPage = ({ allarts = [] }) => {
   // ফিল্টার স্টেটসমূহ
@@ -23,7 +21,6 @@ const AllArtsShopPage = ({ allarts = [] }) => {
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
-      
       if (priceOrder === 'lowToHigh') {
         return Number(a.price) - Number(b.price);
       }
@@ -35,10 +32,22 @@ const AllArtsShopPage = ({ allarts = [] }) => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+      {/* CSS Keyframes for Animation */}
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeUp {
+          animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto">
         
         {/* হেডার সেকশন */}
-        <div className="mb-8 text-center md:text-left">
+        <div className="mb-8 text-center md:text-left animate-fadeUp" style={{ animationDelay: '100ms' }}>
           <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FFE58F] via-[#D4AF37] to-[#AA7C11] tracking-tight mb-2">
             Art Marketplace
           </h1>
@@ -46,25 +55,36 @@ const AllArtsShopPage = ({ allarts = [] }) => {
         </div>
 
         {/* ফিল্টার বার কম্পোনেন্ট */}
-        <FilterNavbar 
-          searchQuery={searchQuery} 
-          setSearchQuery={setSearchQuery}
-          selectedCategory={selectedCategory} 
-          setSelectedCategory={setSelectedCategory}
-          priceOrder={priceOrder} 
-          setPriceOrder={setPriceOrder}
-        />
+        <div className="animate-fadeUp" style={{ animationDelay: '200ms' }}>
+          <FilterNavbar 
+            searchQuery={searchQuery} 
+            setSearchQuery={setSearchQuery}
+            selectedCategory={selectedCategory} 
+            setSelectedCategory={setSelectedCategory}
+            priceOrder={priceOrder} 
+            setPriceOrder={setPriceOrder}
+          />
+        </div>
 
         {/* আর্ট গ্রিড সেকশন */}
         {filteredArts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
             {filteredArts.map((art, index) => (
-              <ArtCard key={art._id || art.id || index} art={art} />
+              <div 
+                key={art._id || art.id || index} 
+                className="animate-fadeUp"
+                style={{ animationDelay: `${300 + (index * 100)}ms` }} // স্ট্যাগার ইফেক্টের জন্য ডাইনামিক ডিলে
+              >
+                <ArtCard art={art} />
+              </div>
             ))}
           </div>
         ) : (
           /* নো ডাটা ফাউন্ড মেসেজ */
-          <div className="text-center py-20 bg-[#121212] rounded-3xl border border-white/5">
+          <div 
+            className="text-center py-20 bg-[#121212] rounded-3xl border border-white/5 mt-8 animate-fadeUp"
+            style={{ animationDelay: '300ms' }}
+          >
             <p className="text-gray-500 text-base">No artworks found matching your criteria.</p>
           </div>
         )}

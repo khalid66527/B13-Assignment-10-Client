@@ -1,58 +1,77 @@
+'use client';
 import React from 'react';
-import { Icon } from '@iconify/react';
 import Link from 'next/link';
 
 const ArtCard = ({ art }) => {
-    return (
-        <div className="group bg-gradient-to-b from-[#161616] to-[#0F0F0F] border border-white/5 rounded-3xl p-4 hover:border-[#D4AF37]/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+  return (
+    <div className="group relative bg-gradient-to-b from-[#161616] to-[#0A0A0A] rounded-[24px] overflow-hidden border border-white/5 hover:border-[#D4AF37]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_-10px_rgba(212,175,55,0.25)] flex flex-col h-full">
+      
+      {/* ইমেইজ এবং টপ ব্যাজ সেকশন */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#000]">
+        
+        {/* আর্টওয়ার্ক ইমেইজ */}
+        {art.image ? (
+          <img
+            src={art.image}
+            alt={art.title || 'Artwork'}
+            className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-600 text-sm font-serif italic">
+            Artwork Unavailable
+          </div>
+        )}
 
-            {/* ইমেজ সেকশন */}
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#1A1A1A] mb-4 shrink-0">
-                <img
-                    src={art.image}
-                    alt={art.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-lg text-[10px] uppercase font-bold text-[#FFE58F] tracking-wider">
-                    {art.category}
-                </div>
-            </div>
-
-            {/* টেক্সট ও কন্টেন্ট */}
-            <div className="flex flex-col flex-grow space-y-2">
-                <div className="flex justify-between items-start gap-2">
-                    <h3 className="text-base font-bold text-white line-clamp-1 group-hover:text-[#FFE58F] transition-colors">
-                        {art.title}
-                    </h3>
-                    <span className="text-base font-extrabold text-[#D4AF37] shrink-0">
-                        ${art.price}
-                    </span>
-                </div>
-
-                <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed flex-grow">
-                    {art.description}
-                </p>
-
-                {/* এক্সট্রা ইনফো (ডাইমেনশন ও ডেট) */}
-                <div className="flex items-center justify-between text-[11px] text-gray-600 border-t border-white/5 pt-2 mt-auto">
-                    <span className="flex items-center gap-1">
-                        <Icon icon="solar:ruler-linear" /> {art.dimensions || 'N/A'}
-                    </span>
-                    <span>{art.date}</span>
-                </div>
-
-                {/* ডিটেইলস বাটন */}
-                <Link
-                    href={`/shop/${art._id || art.id}`} // আপনার ফোল্ডার স্ট্রাকচার অনুযায়ী পাথটি মিলিয়ে নেবেন (যেমন: /shop/id)
-                    className="w-full mt-3 bg-[#1A1A1A] hover:bg-[#D4AF37] text-gray-300 hover:text-black border border-white/5 hover:border-transparent py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-                >
-                    View Details
-                    <Icon icon="solar:arrow-right-linear" className="size-3" />
-                </Link>
-            </div>
-
+        {/* উপরে বামে: ক্যাটাগরি পিল (Glassmorphism) */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-white/5 backdrop-blur-md border border-white/10 text-white/90 text-[10px] uppercase tracking-[0.2em] font-bold px-3 py-1.5 rounded-full shadow-lg">
+            {art.category || 'Collection'}
+          </span>
         </div>
-    );
+
+        {/* উপরে ডানে: প্রাইস ট্যাগ (Gold Glassmorphism) */}
+        <div className="absolute top-4 right-4 z-10">
+          <span className="bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 text-[#D4AF37] text-sm font-extrabold px-4 py-1.5 rounded-full shadow-lg">
+            ${art.price || '0.00'}
+          </span>
+        </div>
+
+        {/* হোভার ওভারলে এবং ভিউ ডিটেইল বাটন */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-20">
+          <Link href={`/shop/${art._id || art.id}`}>
+            <button className="transform translate-y-10 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-75 bg-[#D4AF37] hover:bg-[#AA7C11] text-black font-extrabold tracking-wide py-3 px-8 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105">
+              View Masterpiece
+            </button>
+          </Link>
+        </div>
+        
+        {/* স্মুথ শ্যাডো গ্রেডিয়েন্ট (ইমেইজ এবং টেক্সটের মাঝখানে ব্লেন্ডিংয়ের জন্য) */}
+        <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 pointer-events-none"></div>
+      </div>
+
+      {/* কার্ড ইনফো সেকশন */}
+      <div className="relative z-20 px-6 pb-6 pt-2 flex flex-col justify-end bg-[#0A0A0A]">
+        {/* ডাইনামিক গোল্ড লাইন */}
+        <div className="w-8 h-[2px] bg-[#D4AF37] mb-4 opacity-70 group-hover:w-16 transition-all duration-500 ease-out"></div>
+        
+        {/* টাইটেল */}
+        <h3 className="text-xl font-serif font-bold text-gray-100 group-hover:text-[#D4AF37] transition-colors duration-300 truncate">
+          {art.title || 'Untitled Artwork'}
+        </h3>
+        
+        {/* অতিরিক্ত ইনফো (যেমন সাইজ বা ক্রিয়েশন ইয়ার) */}
+        <div className="flex items-center justify-between mt-3">
+          <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold">
+            Original Piece
+          </p>
+          <div className="opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 text-[#D4AF37]">
+            →
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  );
 };
 
 export default ArtCard;

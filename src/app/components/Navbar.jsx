@@ -54,14 +54,13 @@ export default function CustomHeader() {
   // Custom styling classes
   const linkClass = "text-[#e8dcb8] hover:text-white transition-colors text-sm lg:text-base cursor-pointer flex items-center h-full py-4";
   const activeClass = "text-white font-bold border-b-2 border-[#e8dcb8]";
-  const dropdownItemClass = "block px-4 py-2.5 text-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] transition-colors text-sm";
+  const dropdownItemClass = "block px-4 py-2.5 text-[#e8dcb8] hover:bg-[#D4AF37]/10 hover:text-white transition-colors text-sm";
 
   // Dynamic Title Generator based on active route
   const getPageTitle = (path) => {
     if (path === "/") return "Home";
     if (path.startsWith("/about")) return "About Us";
     if (path.startsWith("/shop")) return "Shop";
-    if (path.startsWith("/collections")) return "Collections";
     if (path.startsWith("/team")) return "Our Team";
     if (path.startsWith("/plans")) return "Pricing";
     
@@ -74,9 +73,7 @@ export default function CustomHeader() {
 
   return (
     <header 
-      // Changed from sticky to relative, and increased height (min-h-[450px])
-      className="relative z-50 w-full border-b border-[#3a3c2f]/50 bg-black/80 bg-cover bg-center bg-no-repeat flex flex-col min-h-[450px] lg:min-h-[500px]"
-      style={{ backgroundImage: "url('/image/Navimg.jpg')", backgroundColor: "rgba(26, 27, 22, 0.9)" }} 
+      className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A0A0A]/85 backdrop-blur-xl flex flex-col"
     >
       {/* --- TOP NAVBAR SECTION --- */}
       <nav className="mx-auto flex h-20 w-full w-10/12 items-center justify-between px-4 lg:px-8 relative z-20">
@@ -122,19 +119,9 @@ export default function CustomHeader() {
               </div>
             </li>
 
-            {/* Exhibitions Dropdown */}
-            {/* <li className="relative group h-full flex items-center">
-              <span className={`${linkClass} gap-1`}>
-                Exhibitions <ChevronDown width={14} className="group-hover:rotate-180 transition-transform duration-300" />
-              </span>
-              <div className="absolute top-[70px] left-0 min-w-[180px] bg-[#1f2019] border border-[#3a3c2f] shadow-xl rounded-b-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                <Link href="/exhibitions/list" className={dropdownItemClass}>List</Link>
-                <Link href="/exhibitions/calendar" className={dropdownItemClass}>Calendar</Link>
-              </div>
-            </li> */}
+       
 
             <li className="h-full flex items-center"><Link href="/shop" className={`${linkClass} ${isActive("/shop") ? activeClass : ""}`}>Shop</Link></li>
-            <li className="h-full flex items-center"><Link href="/collections" className={`${linkClass} ${isActive("/collections") ? activeClass : ""}`}>Collections</Link></li>
 
             {/* Dashboard Dropdown (Role Based) */}
             {userRole && (
@@ -261,28 +248,16 @@ export default function CustomHeader() {
         </div>
       </nav>
 
-      {/* --- HERO SECTION / DYNAMIC PAGE TITLE --- */}
+      
 
-      {/* This creates the large "About Us" style text centered below the nav */}
-      {/* <div className="flex flex-1 items-center justify-center w-full pb-10 relative z-10">
-        <div className="flex flex-col items-center gap-4 animate-fadeIn">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-[#e8dcb8] tracking-wide text-center drop-shadow-lg">
-            {pageTitle}
-          </h1>
-          
-          <ChevronDown width={24} height={24} className="text-[#e8dcb8] mt-2 opacity-80" />
-        </div>
-      </div> */}
-
-      {/* --- MOBILE MENU --- */}
       <div 
-        className={`absolute top-[80px] left-0 w-full bg-[#1a1b16]/95 backdrop-blur-xl border-t border-[#3a3c2f]/50 transition-all duration-400 ease-in-out lg:hidden overflow-hidden z-30 ${
+        className={`absolute top-[80px] left-0 w-full bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 transition-all duration-400 ease-in-out lg:hidden overflow-hidden z-30 ${
           isMenuOpen ? "max-h-[850px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="flex flex-col md:flex-row p-8 gap-10">
-          <ul className="flex flex-col gap-6 w-full md:w-1/2">
-            {["About", "Shop",'Team', "Collections","Plans" ].map((item) => (
+          <ul className="flex flex-col py5 gap-6 w-full md:w-1/2">
+            {["About", "Shop",'Team',"Plans" ].map((item) => (
               <li key={item}>
                 <Link
                   href={`/${item.toLowerCase().replace(" ", "-")}`}

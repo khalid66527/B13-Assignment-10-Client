@@ -193,7 +193,7 @@ const BuyerDashboardHomePage = () => {
 
           <div className="flex flex-col gap-3">
             <Link
-              href="/collections"
+              href="/shop"
               className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[#AA7C11]/20 to-[#D4AF37]/10 border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 group"
             >
               <div className="w-10 h-10 rounded-lg bg-[#D4AF37] text-black flex items-center justify-center shrink-0">

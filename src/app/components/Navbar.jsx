@@ -22,7 +22,6 @@ export default function CustomHeader() {
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme") || "dark";
-    setTheme(localTheme);
     if (localTheme === "dark") {
       document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");

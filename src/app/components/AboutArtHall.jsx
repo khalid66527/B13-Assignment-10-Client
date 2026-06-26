@@ -113,7 +113,7 @@ const AboutArtHall = () => {
               </p>
               <div className="flex flex-wrap gap-4 pt-2">
                 <Link
-                  href="/collections"
+                  href="/shop"
                   className="px-6 py-3 bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-xs font-bold rounded-xl shadow-lg hover:brightness-110 transition-all duration-300"
                 >
                   Browse Gallery
@@ -265,13 +265,13 @@ const AboutArtHall = () => {
             </p>
             <div className="flex justify-center gap-4 pt-2">
               <Link
-                href="/auth/signin"
+                href="/"
                 className="px-6 py-3 bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-xs font-bold rounded-xl shadow-lg hover:brightness-110 transition-all duration-300"
               >
                 Become a Collector
               </Link>
               <Link
-                href="/collections"
+                href="/shop"
                 className="px-6 py-3 border border-zinc-800 hover:border-zinc-700 text-white text-xs font-bold rounded-xl transition-all duration-300"
               >
                 Browse Masterpieces

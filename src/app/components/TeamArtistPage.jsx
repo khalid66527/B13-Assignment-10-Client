@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { getAllCompanies } from "@/lib/api/companies";
+import Link from "next/link";
 
 // Default fallback premium benefits mock companies if the database is empty
 const defaultPartners = [
@@ -249,13 +250,13 @@ const TeamArtistPage = () => {
 
                   {/* Action button */}
                   <div className="pt-4">
-                    <a
-                      href="/collections"
+                    <Link
+                      href="/shop"
                       className="w-full py-3 bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] hover:brightness-110 text-black text-xs font-bold rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-1.5"
                     >
                       Explore Artworks
                       <Icon icon="solar:compass-linear" className="text-sm" />
-                    </a>
+                    </Link>
                   </div>
 
                 </div>

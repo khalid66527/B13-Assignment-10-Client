@@ -193,7 +193,7 @@ const HeroSection = () => {
 
             {/* Solar Gallery Button */}
             <Link
-              href="/collections"
+              href="/shop"
               className="w-full p-5 bg-white/[0.02] backdrop-blur-md border border-white/[0.08] hover:border-[#D4AF37]/30 text-white rounded-2xl flex items-center gap-4 hover:bg-white/[0.06] transition-all duration-300 shadow-xl hover:-translate-y-0.5 group"
             >
               <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">

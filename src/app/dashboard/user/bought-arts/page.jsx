@@ -164,7 +164,7 @@ const BoughtArtsPage = () => {
             </p>
           </div>
           <Link
-            href="/collections"
+            href="/shop"
             className="px-5 py-2 bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-xs font-bold rounded-xl shadow-lg hover:brightness-110 transition-all duration-300"
           >
             Explore Gallery

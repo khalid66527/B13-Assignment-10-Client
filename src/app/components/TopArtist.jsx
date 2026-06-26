@@ -57,7 +57,9 @@ const TopArtist = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-4">
-        <Icon icon="eos-icons:loading" className="text-4xl text-[#D4AF37] animate-spin" />
+        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center text-[#D4AF37]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#D4AF37]"></div>
+      </div>
         <p className="text-xs text-gray-500 font-medium">Curating our top selling creators...</p>
       </div>
     );

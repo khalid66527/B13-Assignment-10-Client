@@ -3,7 +3,7 @@ import React, { useState, Suspense } from 'react';
 import { Button, Description, Radio, RadioGroup } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons';
 import { FcGoogle } from 'react-icons/fc';
-import { signUp } from '@/lib/auth-client';
+import { authClient, signUp } from '@/lib/auth-client';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const SignupForm = () => {
@@ -84,6 +84,16 @@ const SignupForm = () => {
       setIsSubmitting(false);
     }
   };
+
+
+    const handleGoogleSignin =async()=>{
+      const data = await authClient.signIn.social({
+      provider: "google",
+    });
+  
+    
+    }
+  
   return (
     <div className="relative min-h-screen bg-[#0A0A0A] text-gray-300 font-sans flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
 
@@ -234,6 +244,7 @@ const SignupForm = () => {
 
           {/* Google OAuth Button */}
           <Button
+          onClick={handleGoogleSignin}
             type="button"
             variant="bordered"
             className="w-full h-12 border border-gray-800 hover:border-[#D4AF37]/50 bg-[#1A1A1A]/40  rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
@@ -259,9 +270,17 @@ const SignupForm = () => {
 const SignupPage = () => {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center text-gray-500 font-sans">
-        Loading...
-      </div>
+      <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center space-y-6">
+      
+      {/* Glow Spinner */}
+      <div className="w-12 h-12 border-4 border-[#2a2a2a] border-t-[#D4AF37] rounded-full animate-spin shadow-[0_0_15px_#D4AF37]"></div>
+
+      {/* Text */}
+      <p className="text-xs text-[#D4AF37]/80 tracking-[3px] uppercase">
+        Loading Content
+      </p>
+
+    </div>
     }>
       <SignupForm />
     </Suspense>

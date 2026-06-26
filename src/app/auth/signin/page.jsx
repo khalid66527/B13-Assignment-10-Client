@@ -1,12 +1,22 @@
 'use client';
 import React, { useState, Suspense } from 'react';
-import { Button, Description, Radio, RadioGroup } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Eye, EyeSlash } from '@gravity-ui/icons'; 
 import { FcGoogle } from 'react-icons/fc';
-import { signIn }  from "@/lib/auth-client"
-import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import { authClient, signIn }  from "@/lib/auth-client"
+import {  useRouter, useSearchParams } from 'next/navigation';
 
 const SigninForm = () => {
+
+
+  const handleGoogleSignin =async()=>{
+    const data = await authClient.signIn.social({
+    provider: "google",
+  });
+
+  
+  }
+
   const searchParams =useSearchParams()
   
   const redirectTo = searchParams.get("redirect") || "/"
@@ -114,42 +124,6 @@ const SigninForm = () => {
               />
             </div>
 
-            {/* Role Selection (HeroUI RadioGroup)
-            <div className="space-y-2 pt-1 pb-1">
-              <label className="text-xs font-semibold text-[#D4AF37]/80 ml-1">Sign In As</label>
-              <RadioGroup 
-                name="role" 
-                value={role} 
-                onChange={setRole}
-                className="flex flex-row gap-3"
-              >
-                <Radio 
-                  value="buyer"
-                  className="flex-1 bg-[#1A1A1A]/60 border border-[#D4AF37]/20 rounded-xl p-3 hover:border-[#D4AF37]/50 transition-colors"
-                >
-                  <Radio.Content>
-                    <Radio.Control>
-                      <Radio.Indicator className="bg-[#D4AF37]" />
-                    </Radio.Control>
-                    <span className="text-sm font-medium text-white">Buyer</span>
-                  </Radio.Content>
-                  <Description className="text-xs text-gray-500 mt-1">Access your collection</Description>
-                </Radio>
-
-                <Radio 
-                  value="artist"
-                  className="flex-1 bg-[#1A1A1A]/60 border border-[#D4AF37]/20 rounded-xl p-3 hover:border-[#D4AF37]/50 transition-colors"
-                >
-                  <Radio.Content>
-                    <Radio.Control>
-                      <Radio.Indicator className="bg-[#D4AF37]" />
-                    </Radio.Control>
-                    <span className="text-sm font-medium text-white">Artist</span>
-                  </Radio.Content>
-                  <Description className="text-xs text-gray-500 mt-1">Manage your artwork</Description>
-                </Radio>
-              </RadioGroup>
-            </div> */}
 
             {/* Password */}
             <div className="space-y-1">
@@ -199,6 +173,7 @@ const SigninForm = () => {
 
           {/* Google OAuth Button */}
           <Button
+            onClick={handleGoogleSignin}
             type="button"
             variant="bordered"
             className="w-full h-12 border border-gray-800 hover:border-[#D4AF37]/50 bg-[#1A1A1A]/40 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
@@ -224,9 +199,17 @@ const SigninForm = () => {
 const SigninPage = () => {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center text-gray-500 font-sans">
-        Loading...
-      </div>
+      <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center space-y-6">
+      
+      {/* Glow Spinner */}
+      <div className="w-12 h-12 border-4 border-[#2a2a2a] border-t-[#D4AF37] rounded-full animate-spin shadow-[0_0_15px_#D4AF37]"></div>
+
+      {/* Text */}
+      <p className="text-xs text-[#D4AF37]/80 tracking-[3px] uppercase">
+        Loading Content
+      </p>
+
+    </div>
     }>
       <SigninForm />
     </Suspense>

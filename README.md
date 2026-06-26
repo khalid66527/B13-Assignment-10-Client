@@ -84,66 +84,6 @@ git clone https://github.com/khalid66527/B13-Assignment-10-Client.git
 cd B13-Assignment-10-Client
 ```
 
-### 2. Install dependencies
-```bash
-npm install
-```
-
-### 3. Setup Environment Variables
-Create a `.env` file in the root folder and add the following keys:
-```env
-# Better Auth Configuration
-BETTER_AUTH_SECRET=your_better_auth_secret_key
-BETTER_AUTH_URL=http://localhost:3000
-
-# Database Configuration
-MONGODB_URI=your_mongodb_connection_uri
-AUTH_DB_NAME=b13_assignment_10_db
-
-# Image Upload
-NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
-
-# Backend Server Url
-NEXT_PUBLIC_URL=your_backend_server_url
-
-# Google Client Auth (OAuth 2.0)
-GOOGLE_AUTH_CLIENT_ID=your_google_client_id
-GOOGLE_AUTH_CLIENT_SECRET=your_google_client_secret
-
-# Stripe Configuration
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-```
-
-### 4. Run the Development Server
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
-
----
-
-## 📁 Key Directory Structure
-```text
-├── src/
-│   ├── app/
-│   │   ├── about/            # About Page
-│   │   ├── api/              # Route handlers (checkout, etc.)
-│   │   ├── auth/             # Sign-in & Sign-up routes
-│   │   ├── dashboard/        # Role-based subfolders (admin, artist, user)
-│   │   ├── plans/            # Subscription plans & Success page
-│   │   ├── shop/             # Artwork search & Stripe BuyNow page
-│   │   ├── team/             # Team & featured artists list
-│   │   ├── components/       # Global & dashboard specific components
-│   │   ├── globals.css       # Core Tailwind CSS configuration
-│   │   └── layout.js         # Base viewport wrapper
-│   └── lib/
-│       ├── actions/          # Backend/Database mutations
-│       └── auth-client.js    # Better Auth client initialization
-```
-
----
-
 ## 🛡️ License
 Distributed under the MIT License. See `LICENSE` for more information.
 

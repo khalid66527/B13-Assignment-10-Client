@@ -5,6 +5,7 @@ import { Button } from "@heroui/react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { buynowStore } from '@/lib/actions/buynow';
+import CommentPage from './comment/CommentPage';
 
 const ArtDetails = ({ allArt, id, user }) => {
     console.log('useData', user);
@@ -22,7 +23,7 @@ const ArtDetails = ({ allArt, id, user }) => {
         );
     }
 
-    const { title, category, price, companyId, companyName, dimensions, date, image, description } = allArt;
+    const { title, category, price, companyId, companyName, dimensions, date, image, description ,artistName ,artistEmail } = allArt;
 
     const handleBuyNow = async () => {
         if (!user) {
@@ -114,6 +115,31 @@ const ArtDetails = ({ allArt, id, user }) => {
                         </div>
                     </div>
 
+                    <div className="bg-[#111111] p-4 rounded-2xl border border-white/5">
+                        <h1 className='text-xl text-gray-200 pb-2 font-bold'>Artist Details</h1>
+                        <div className="grid grid-cols-2 gap-4 ">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2.5 bg-[#1A1A1A] rounded-xl text-[#D4AF37]">
+                                <Icon icon="solar:user-linear" className="size-5" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Artist Name</p>
+                                <p className="text-sm font-semibold text-gray-300">{artistName || 'Custom Size'}</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <div className="p-2.5 bg-[#1A1A1A] rounded-xl text-[#D4AF37]">
+                                <Icon icon="solar:letter-linear" className="size-5" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Artist Email</p>
+                                <p className="text-sm font-semibold text-gray-300">{artistEmail || 'Unknown'}</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
                     {/* ডেসক্রিপশন */}
                     <div className="space-y-2">
                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">About This Artwork</h3>
@@ -154,6 +180,9 @@ const ArtDetails = ({ allArt, id, user }) => {
 
                 </div>
             </div>
+
+            {/* --- COMMENT SECTION --- */}
+            <CommentPage artworkId={id} user={user} />
 
         </div>
     );

@@ -21,6 +21,18 @@ export default function CustomHeader() {
   const pathname = usePathname();
 
   useEffect(() => {
+    const localTheme = localStorage.getItem("theme") || "dark";
+    setTheme(localTheme);
+    if (localTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  useEffect(() => {
     const handleClose = () => setIsProfileOpen(false);
     if (isProfileOpen) {
       document.addEventListener("click", handleClose);
@@ -37,7 +49,9 @@ export default function CustomHeader() {
     localStorage.setItem("theme", newTheme);
     if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
     } else {
+      document.documentElement.classList.add("light");
       document.documentElement.classList.remove("dark");
     }
   };
@@ -76,7 +90,7 @@ export default function CustomHeader() {
       className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A0A0A]/85 backdrop-blur-xl flex flex-col"
     >
       {/* --- TOP NAVBAR SECTION --- */}
-      <nav className="mx-auto flex h-20 w-full w-10/12 items-center justify-between px-4 lg:px-8 relative z-20">
+      <nav className="mx-auto flex h-20 w-full w-10/12 items-center justify-between px-4  lg:px-8 relative z-20">
         
         
 

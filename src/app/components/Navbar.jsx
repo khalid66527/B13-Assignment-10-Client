@@ -39,6 +39,26 @@ export default function CustomHeader() {
     return () => document.removeEventListener("click", handleClose);
   }, [isProfileOpen]);
 
+  useEffect(() => {
+    if (user) {
+      fetch("/api/jwt")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch token");
+          return res.json();
+        })
+        .then(data => {
+          if (data?.token) {
+            localStorage.setItem("jwt_token", data.token);
+            document.cookie = `jwt_token=${data.token}; path=/; max-age=604800; SameSite=Strict`;
+          }
+        })
+        .catch(err => console.error("Error setting JWT token:", err));
+    } else if (!isPending) {
+      localStorage.removeItem("jwt_token");
+      document.cookie = "jwt_token=; path=/; max-age=0";
+    }
+  }, [user, isPending]);
+
 
 
   const toggleTheme = (e) => {
@@ -57,6 +77,8 @@ export default function CustomHeader() {
 
   const handleSignOut = async () => {
     await authClient.signOut();
+    localStorage.removeItem("jwt_token");
+    document.cookie = "jwt_token=; path=/; max-age=0";
     setIsProfileOpen(false);
     window.location.reload();
   };

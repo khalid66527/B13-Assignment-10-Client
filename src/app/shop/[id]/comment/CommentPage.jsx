@@ -56,9 +56,14 @@ const CommentPage = ({ artworkId, user }) => {
     if (!newComment.trim() || !user) return;
 
     try {
+      const token = localStorage.getItem("jwt_token");
+      const headers = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       const res = await fetch(`${baseUrl}/api/artworks/${id}/comments`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           userId: user.id,
           userName: user.name,
@@ -98,9 +103,14 @@ const CommentPage = ({ artworkId, user }) => {
     if (!editingText.trim() || !user) return;
 
     try {
+      const token = localStorage.getItem("jwt_token");
+      const headers = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       const res = await fetch(`${baseUrl}/api/comments/${commentId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           userId: user.id,
           comment: editingText.trim(),
@@ -125,8 +135,14 @@ const CommentPage = ({ artworkId, user }) => {
     if (!window.confirm("Are you sure you want to delete this comment?")) return;
 
     try {
+      const token = localStorage.getItem("jwt_token");
+      const headers = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       const res = await fetch(`${baseUrl}/api/comments/${commentId}?userId=${user.id}`, {
         method: "DELETE",
+        headers
       });
 
       if (res.ok) {

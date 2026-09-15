@@ -265,7 +265,7 @@ const AboutArtHall = () => {
             </p>
             <div className="flex justify-center gap-4 pt-2">
               <Link
-                href="/"
+                href="/auth/signup"
                 className="px-6 py-3 bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-xs font-bold rounded-xl shadow-lg hover:brightness-110 transition-all duration-300"
               >
                 Become a Collector

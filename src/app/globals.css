@@ -1,3 +1,299 @@
 @import "tailwindcss";
 
 @import "@heroui/styles";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Smooth transition for theme switching */
+html {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+  background-color: #0A0A0A;
+  color: #d1d5db;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   LIGHT THEME DESIGN SYSTEM (Curated Luxury Gallery & Fine Art Palette)
+   ========================================================================== */
+
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #F8F9FA !important;
+  color: #1E293B !important;
+}
+
+/* 1. Base Canvas & Background Containers */
+html.light main,
+html.light footer,
+html.light section,
+html.light .min-h-screen,
+html.light [class*="bg-[#050505]"],
+html.light [class*="bg-[#0A0A0A]"],
+html.light [class*="bg-[#06060C]"],
+html.light [class*="bg-[#000000]"],
+html.light [class*="bg-[#080808]"],
+html.light [class*="bg-[#0c0d14]"],
+html.light .bg-black {
+  background-color: #F8F9FA !important;
+}
+
+/* 2. Top Headers & Navbars */
+html.light header,
+html.light nav,
+html.light header *[class*="bg-[#0A0A0A]"],
+html.light header *[class*="bg-[#121212]"] {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* 3. Universal Cards, Panels, Sidebars & Hero Containers */
+html.light aside,
+html.light [class*="bg-[#161616]"],
+html.light [class*="bg-[#141414]"],
+html.light [class*="bg-[#121212]"],
+html.light [class*="bg-[#111111]"],
+html.light [class*="bg-[#101010]"],
+html.light [class*="bg-[#171717]"],
+html.light [class*="bg-[#181818]"],
+html.light [class*="bg-[#18181b]"],
+html.light [class*="bg-[#191919]"],
+html.light [class*="bg-[#1A1A1A]"],
+html.light [class*="bg-[#1a1b16]"],
+html.light [class*="bg-[#1c1710]"],
+html.light [class*="bg-[#1c1d17]"],
+html.light [class*="bg-[#141510]"],
+html.light [class*="bg-[#1C1C1E]"],
+html.light [class*="bg-[#1f2019]"],
+html.light [class*="bg-[#11120e]"],
+html.light [class*="bg-[#0D0D0E]"],
+html.light [class*="bg-[#0F0F0F]"],
+html.light [class*="bg-[#0F0F0C]"],
+html.light [class*="bg-zinc-950"],
+html.light [class*="bg-zinc-900"],
+html.light [class*="bg-zinc-800"],
+html.light [class*="bg-neutral-950"],
+html.light [class*="bg-neutral-900"],
+html.light [class*="bg-neutral-800"] {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 4. Secondary Well Items & Nested Panels */
+html.light [class*="bg-[#141414]"],
+html.light [class*="bg-[#1C1C1E]"],
+html.light [class*="bg-[#1c1d17]"],
+html.light [class*="bg-[#141510]"],
+html.light [class*="bg-zinc-900"],
+html.light [class*="bg-gray-800"] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light [class*="hover:bg-[#1c1710]"]:hover,
+html.light [class*="hover:bg-[#141414]"]:hover,
+html.light [class*="hover:bg-[#1c1d17]"]:hover,
+html.light [class*="hover:bg-zinc-800"]:hover,
+html.light [class*="hover:bg-zinc-900"]:hover {
+  background-color: #FEF3C7 !important;
+  border-color: #FDE68A !important;
+}
+
+/* 5. Hero Section / Large Gradient Containers */
+html.light [class*="from-[#161616]"],
+html.light [class*="from-[#161612]"],
+html.light [class*="from-[#1c1710]"],
+html.light [class*="from-[#1c1d17]"],
+html.light [class*="from-[#050505]"],
+html.light [class*="from-[#0A0A0A]"],
+html.light [class*="from-[#0D0D0E]"],
+html.light [class*="from-[#0F0F0C]"],
+html.light [class*="from-[#111111]"],
+html.light [class*="from-zinc-950"],
+html.light [class*="from-zinc-900"] {
+  background-color: #FFFFFF !important;
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* 6. Dropdowns, Drawers, Modals & Profile Menu */
+html.light [class*="bg-[#1f2019]"],
+html.light [class*="bg-[#1a1b16]"],
+html.light [class*="bg-[#11120e]"],
+html.light [role="menu"],
+html.light [role="dialog"],
+html.light .dropdown-menu {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Ensure links in dropdown menus remain clean transparent items in light mode */
+html.light [role="menu"] a,
+html.light .dropdown-menu a,
+html.light [class*="bg-[#1f2019]"] a,
+html.light [class*="bg-[#1a1b16]"] a {
+  background: transparent !important;
+  color: #1E293B !important;
+  box-shadow: none !important;
+}
+
+html.light [role="menu"] a:hover,
+html.light .dropdown-menu a:hover,
+html.light [class*="bg-[#1f2019]"] a:hover,
+html.light [class*="bg-[#1a1b16]"] a:hover {
+  background-color: #FEF3C7 !important;
+  color: #92400E !important;
+}
+
+/* 7. Typography / Headings & Titles */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6,
+html.light [class*="text-white"],
+html.light [class*="text-zinc-100"],
+html.light [class*="text-zinc-200"],
+html.light [class*="text-gray-100"] {
+  color: #0F172A !important;
+}
+
+/* 8. Subtext, Paragraphs & Metadata */
+html.light p,
+html.light address,
+html.light [class*="text-gray-200"],
+html.light [class*="text-gray-300"],
+html.light [class*="text-gray-400"],
+html.light [class*="text-zinc-400"] {
+  color: #475569 !important;
+}
+
+html.light [class*="text-gray-500"],
+html.light [class*="text-zinc-500"],
+html.light [class*="text-zinc-600"] {
+  color: #64748B !important;
+}
+
+/* 9. Gold, Bronze & Amber Accents (High Contrast in Light Mode) */
+html.light [class*="text-[#D4AF37]"] {
+  color: #B45309 !important;
+}
+
+html.light [class*="text-[#e8dcb8]"],
+html.light [class*="text-[#FFE58F]"] {
+  color: #92400E !important;
+}
+
+/* 10. Badges, Icons & Accent Pills */
+html.light [class*="bg-[#D4AF37]/10"],
+html.light [class*="bg-[#D4AF37]/20"],
+html.light [class*="bg-[#D4AF37]/5"],
+html.light [class*="bg-[#D4AF37]/30"],
+html.light [class*="bg-[#FFE58F]/10"] {
+  background-color: #FEF3C7 !important;
+  color: #92400E !important;
+  border-color: #FDE68A !important;
+}
+
+html.light [class*="bg-white/5"],
+html.light [class*="bg-white/10"],
+html.light [class*="bg-white/[0.02]"] {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* 11. Borders */
+html.light [class*="border-white/"],
+html.light [class*="border-zinc-8"],
+html.light [class*="border-zinc-9"],
+html.light [class*="border-zinc-7"],
+html.light [class*="border-[#3a3c2f]"],
+html.light [class*="border-[#3a3c2f]/"] {
+  border-color: #E2E8F0 !important;
+}
+
+html.light [class*="border-[#D4AF37]/"],
+html.light [class*="border-[#D4AF37]"] {
+  border-color: rgba(180, 83, 9, 0.3) !important;
+}
+
+/* 12. Form Inputs, Textareas & Selects */
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #B45309 !important;
+  outline: 2px solid rgba(180, 83, 9, 0.2) !important;
+}
+
+/* 13. Tables & Table Rows */
+html.light thead,
+html.light table th {
+  background-color: #F8FAFC !important;
+  color: #334155 !important;
+  border-bottom: 2px solid #E2E8F0 !important;
+}
+
+html.light tbody tr {
+  border-color: #E2E8F0 !important;
+  background-color: #FFFFFF !important;
+}
+
+html.light tbody tr:hover {
+  background-color: #F8FAFC !important;
+}
+
+/* 14. Interactive Buttons */
+html.light button[class*="from-[#AA7C11]"]:not([class*="hover:"]):not([class*="bg-[#1"]),
+html.light a[class*="from-[#AA7C11]"]:not([class*="hover:"]):not([class*="bg-[#1"]),
+html.light button.btn-gold,
+html.light a.btn-gold {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(180, 83, 9, 0.25) !important;
+}
+
+html.light button[class*="border-zinc-800"],
+html.light a[class*="border-zinc-800"] {
+  border-color: #CBD5E1 !important;
+  color: #1E293B !important;
+  background-color: #FFFFFF !important;
+}
+
+html.light button[class*="border-zinc-800"]:hover,
+html.light a[class*="border-zinc-800"]:hover {
+  border-color: #B45309 !important;
+  color: #B45309 !important;
+}
+
+/* 15. Metallic Clip Text Gradients */
+html.light .bg-clip-text {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  background-image: linear-gradient(135deg, #92400E 0%, #B45309 50%, #D97706 100%) !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}

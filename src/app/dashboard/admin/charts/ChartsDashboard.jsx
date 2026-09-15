@@ -68,6 +68,11 @@ const ChartsDashboard = ({ sales = [], categoryCounts = [], totalArtworks = 0 })
         return { linePath: pathD, areaPath: areaD };
     }, [salesPoints]);
 
+    // Donut math
+    const radius = 70;
+    const strokeWidth = 24;
+    const circumference = 2 * Math.PI * radius; // ~439.82
+
     // 2. Process Categories for Donut Chart
     const donutData = useMemo(() => {
         const colors = [
@@ -79,27 +84,24 @@ const ChartsDashboard = ({ sales = [], categoryCounts = [], totalArtworks = 0 })
             "#F87171"  // Salmon
         ];
 
-        let accumulatedPercent = 0;
-        return categoryCounts.map(([name, count], idx) => {
+        const result = [];
+        let runningOffset = 0;
+        for (let idx = 0; idx < categoryCounts.length; idx++) {
+            const [name, count] = categoryCounts[idx];
             const pct = totalArtworks > 0 ? count / totalArtworks : 0;
-            const startAngle = accumulatedPercent * 360;
-            accumulatedPercent += pct;
-            
-            return {
+            const sliceStroke = pct * circumference;
+            result.push({
                 name,
                 count,
                 percentage: pct * 100,
-                color: colors[idx % colors.length]
-            };
-        });
-    }, [categoryCounts, totalArtworks]);
-
-    // Donut math
-    const radius = 70;
-    const strokeWidth = 24;
-    const circumference = 2 * Math.PI * radius; // ~439.82
-
-    let accumulatedCircumference = 0;
+                color: colors[idx % colors.length],
+                sliceStroke,
+                sliceOffset: runningOffset
+            });
+            runningOffset -= sliceStroke;
+        }
+        return result;
+    }, [categoryCounts, totalArtworks, circumference]);
 
     return (
         <div className="space-y-8 pb-10">
@@ -277,10 +279,6 @@ const ChartsDashboard = ({ sales = [], categoryCounts = [], totalArtworks = 0 })
 
                                     {/* Segment Slices */}
                                     {donutData.map((slice, idx) => {
-                                        const sliceOffset = accumulatedCircumference;
-                                        const sliceStroke = (slice.percentage / 100) * circumference;
-                                        accumulatedCircumference -= sliceStroke;
-
                                         const isHighlighted = activeCategoryIndex === idx;
 
                                         return (
@@ -292,8 +290,8 @@ const ChartsDashboard = ({ sales = [], categoryCounts = [], totalArtworks = 0 })
                                                 fill="transparent"
                                                 stroke={slice.color}
                                                 strokeWidth={isHighlighted ? strokeWidth + 4 : strokeWidth}
-                                                strokeDasharray={`${sliceStroke} ${circumference}`}
-                                                strokeDashoffset={sliceOffset}
+                                                strokeDasharray={`${slice.sliceStroke} ${circumference}`}
+                                                strokeDashoffset={slice.sliceOffset}
                                                 strokeLinecap="butt"
                                                 className="transition-all duration-300 cursor-pointer"
                                                 style={{ transformOrigin: '80px 80px' }}

@@ -11,22 +11,27 @@ const BuyerDashboardHomePage = () => {
   const user = session?.user;
 
   const [boughtArts, setBoughtArts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     if (user?.id) {
-      setLoading(true);
       getBuynowByBuynower(user.id)
         .then((data) => {
-          setBoughtArts(data || []);
+          if (isMounted) {
+            setBoughtArts(data || []);
+            setLoading(false);
+          }
         })
         .catch((err) => {
           console.error("Failed to load user purchases:", err);
-        })
-        .finally(() => {
-          setLoading(false);
+          if (isMounted) setLoading(false);
         });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [user?.id]);
 
   // Calculate dynamic stats

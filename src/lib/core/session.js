@@ -43,14 +43,13 @@ export const adminRole = async (role) => {
 
 
 
-export const userRole = async (role) => {
-    const user = await getUserSession()
+export const userRole = async (role = 'buyer') => {
+    const user = await getUserSession();
     if (!user) {
-        redirect('/auth/signin')
+        redirect('/auth/signin');
     }
-    if (user.role !== role){
-        return redirect('/unauthorized')
-        }
-
-        return user
-}
+    if (user.role !== 'buyer' && user.role !== 'user' && user.role !== role) {
+        redirect('/unauthorized');
+    }
+    return user;
+};

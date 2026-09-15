@@ -177,7 +177,7 @@ const TeamArtistPage = () => {
                       </div>
                       {comp.website && (
                         <a
-                          
+                          href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#D4AF37] font-semibold flex items-center gap-0.5 hover:underline"

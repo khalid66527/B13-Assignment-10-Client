@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Link, Button } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Magnifier, ChevronDown } from "@gravity-ui/icons";
 import { useSession, authClient } from "@/lib/auth-client";
 
@@ -62,11 +63,14 @@ export default function CustomHeader() {
 
 
   const toggleTheme = (e) => {
-    e.stopPropagation();
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    if (newTheme === "dark") {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const currentTheme = document.documentElement.classList.contains("light") ? "light" : "dark";
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    
+    if (nextTheme === "dark") {
       document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");
     } else {
@@ -89,7 +93,7 @@ export default function CustomHeader() {
   // Custom styling classes
   const linkClass = "text-[#e8dcb8] hover:text-white transition-colors text-sm lg:text-base cursor-pointer flex items-center h-full py-4";
   const activeClass = "text-white font-bold border-b-2 border-[#e8dcb8]";
-  const dropdownItemClass = "block px-4 py-2.5 text-[#e8dcb8] hover:bg-[#D4AF37]/10 hover:text-white transition-colors text-sm";
+  const dropdownItemClass = "block px-4 py-2.5 text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-sm";
 
   // Dynamic Title Generator based on active route
   const getPageTitle = (path) => {
@@ -195,6 +199,7 @@ export default function CustomHeader() {
           <button aria-label="Search" className="hidden lg:block text-[#e8dcb8] hover:text-white transition-colors">
             <Magnifier width={20} />
           </button>
+
           {isPending ? (
             <div className="w-8 h-8 rounded-full border border-gray-700 animate-pulse bg-gray-800"></div>
           ) : session ? (
@@ -222,35 +227,47 @@ export default function CustomHeader() {
                   <div className="px-4 py-2 border-b border-[#3a3c2f] mb-1">
                     <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
                     <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                    {userRole && (
+                      <span className="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#FFE58F]">
+                        {userRole}
+                      </span>
+                    )}
                   </div>
 
-                  <Link href="/profile" className={dropdownItemClass}>
+                  <Link href="/profile" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
                     Profile
                   </Link>
 
                   <button 
                     onClick={toggleTheme}
-                    className="w-full text-left px-4 py-2.5 text-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] transition-colors text-sm flex items-center justify-between cursor-pointer"
+                    className="w-full text-left px-4 py-2.5 text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-sm flex items-center justify-between cursor-pointer"
                   >
                     <span>Theme</span>
-                    <span className="text-xs font-semibold uppercase px-1.5 py-0.5 rounded bg-black/40 text-white">
+                    <span className="text-xs font-semibold uppercase px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#FFE58F]">
                       {theme === "dark" ? "Dark 🌙" : "Light ☀️"}
                     </span>
                   </button>
 
                   <div className="border-t border-[#3a3c2f]/40 my-1"></div>
                   
-                  <Link href="/dashboard/user" className={dropdownItemClass}>
-                    Buyer Dashboard
-                  </Link>
-                  <Link href="/dashboard/artist" className={dropdownItemClass}>
-                    Artist Dashboard
-                  </Link>
-                  <Link href="/dashboard/admin" className={dropdownItemClass}>
-                    Admin Dashboard
-                  </Link>
+                  {/* Role-based Dashboard Link */}
+                  {(userRole === "buyer" || userRole === "user") && (
+                    <Link href="/dashboard/user" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
+                      User Dashboard
+                    </Link>
+                  )}
+                  {userRole === "artist" && (
+                    <Link href="/dashboard/artist" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
+                      Artist Dashboard
+                    </Link>
+                  )}
+                  {userRole === "admin" && (
+                    <Link href="/dashboard/admin" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
+                      Admin Dashboard
+                    </Link>
+                  )}
 
-                  <Link href="/profile" className={dropdownItemClass}>
+                  <Link href="/profile" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
                     Settings
                   </Link>
 
@@ -272,9 +289,7 @@ export default function CustomHeader() {
               </Link>
               <Link 
                 href="/auth/signup" 
-                variant="bordered" 
-                radius="sm"
-                className="text-[#e8dcb8] border-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] font-semibold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3 sm:py-2 border"
+                className="text-[#e8dcb8] border-[#e8dcb8] hover:bg-[#e8dcb8] hover:text-[#1a1b16] font-semibold text-xs sm:text-sm px-2.5 py-1.5 sm:px-3 sm:py-2 border rounded-sm"
               >
                 Sign Up
               </Link>
@@ -291,8 +306,8 @@ export default function CustomHeader() {
         }`}
       >
         <div className="flex flex-col md:flex-row p-8 gap-10">
-          <ul className="flex flex-col py5 gap-6 w-full md:w-1/2">
-            {["About", "Shop",'Team',"Plans" ].map((item) => (
+          <ul className="flex flex-col py-5 gap-6 w-full md:w-1/2">
+            {["About", "Shop", "Team", "Plans"].map((item) => (
               <li key={item}>
                 <Link
                   href={`/${item.toLowerCase().replace(" ", "-")}`}
@@ -304,6 +319,74 @@ export default function CustomHeader() {
                 </Link>
               </li>
             ))}
+
+            {session && (
+              <>
+                <li className="border-t border-[#3a3c2f]/60 pt-4">
+                  {(userRole === "buyer" || userRole === "user") && (
+                    <Link
+                      href="/dashboard/user"
+                      className="text-2xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center group w-max"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      User Dashboard
+                      <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-300 ml-2">→</span>
+                    </Link>
+                  )}
+                  {userRole === "artist" && (
+                    <Link
+                      href="/dashboard/artist"
+                      className="text-2xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center group w-max"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Artist Dashboard
+                      <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-300 ml-2">→</span>
+                    </Link>
+                  )}
+                  {userRole === "admin" && (
+                    <Link
+                      href="/dashboard/admin"
+                      className="text-2xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center group w-max"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Admin Dashboard
+                      <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-300 ml-2">→</span>
+                    </Link>
+                  )}
+                </li>
+                <li>
+                  <Link
+                    href="/profile"
+                    className="text-2xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center group w-max"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My Profile
+                    <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-300 ml-2">→</span>
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-xl font-serif text-red-400 hover:text-red-300 transition-all flex items-center"
+                  >
+                    Sign Out
+                  </button>
+                </li>
+              </>
+            )}
+
+            <li className="border-t border-[#3a3c2f]/60 pt-4">
+              <button
+                onClick={toggleTheme}
+                className="w-full text-left text-xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center justify-between"
+              >
+                <span>Switch Theme</span>
+                <span className="text-sm font-sans font-semibold uppercase px-2 py-1 rounded bg-[#D4AF37]/20 text-[#FFE58F]">
+                  {theme === "dark" ? "Dark 🌙" : "Light ☀️"}
+                </span>
+              </button>
+            </li>
+
             {!session && (
               <li className="mt-4 flex flex-col gap-4 border-t border-[#3a3c2f] pt-6 sm:hidden">
                 <Link href="/auth/signin" className="text-xl text-[#e8dcb8]" onClick={() => setIsMenuOpen(false)}>Sign In</Link>

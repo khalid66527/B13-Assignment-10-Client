@@ -1,6 +1,6 @@
-import React from 'react';import Link from 'next/link';
+import React from 'react';
+import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { Avatar, Button } from '@heroui/react';
 import { getAllUsers } from '@/lib/api/alluser';
 import { getCompanyArts } from '@/lib/api/arts';
 import { getAllPurchases } from '@/lib/api/purchases';
@@ -51,7 +51,7 @@ const AdminDashboardHomePage = async () => {
         type: 'purchase',
         detail: `Artwork bought by ${p.userEmail}`,
         amount: Number(p.price) || 0,
-        date: new Date(p?.purchaseDate || Date.now())
+        date: p?.purchaseDate ? new Date(p.purchaseDate) : new Date(0)
     }));
 
     const formattedSubscriptions = subscriptions.map(s => {
@@ -65,7 +65,7 @@ const AdminDashboardHomePage = async () => {
             type: 'subscription',
             detail: `${s.email} subscribed to ${s.planId ? s.planId.replace('buynower_', '') : 'plan'}`,
             amount: amount,
-            date: new Date(s.createdAt || Date.now())
+            date: s.createdAt ? new Date(s.createdAt) : new Date(0)
         };
     });
 
@@ -277,12 +277,13 @@ const AdminDashboardHomePage = async () => {
                                 return (
                                     <div key={userId} className="flex items-center justify-between p-3 bg-[#121212]/70 border border-white/5 rounded-xl hover:border-white/10 transition-all">
                                         <div className="flex items-center gap-3">
-                                            <Avatar size="sm" className="rounded-full border border-white/10 shrink-0">
-                                                <Avatar.Image src={user.image} />
-                                                <Avatar.Fallback>
+                                            <div className="w-8 h-8 rounded-full border border-white/10 shrink-0 overflow-hidden bg-zinc-800 flex items-center justify-center">
+                                                {user.image ? (
+                                                    <img src={user.image} alt={user.name || "User"} className="w-full h-full object-cover" />
+                                                ) : (
                                                     <Icon icon="solar:user-bold" className="size-3.5 text-gray-400" />
-                                                </Avatar.Fallback>
-                                            </Avatar>
+                                                )}
+                                            </div>
                                             <div className="text-left">
                                                 <p className="text-xs text-white font-medium">
                                                     {user.name || "N/A"}

@@ -46,6 +46,11 @@ const DashboardSidebar = () => {
 
   const userDashboard = [
     {
+      title: "Dashboard Overview",
+      path: "/dashboard/user",
+      icon: "solar:home-angle-bold-duotone",
+    },
+    {
       title: "Profile Management",
       path: "/dashboard/user/profile",
       icon: "solar:user-circle-bold-duotone",
@@ -60,53 +65,60 @@ const DashboardSidebar = () => {
       path: "/dashboard/user/bought-arts",
       icon: "solar:palette-round-bold-duotone",
     }
-  ]
+  ];
+
   const adminDashboard = [
-  {
-    title: "Manage Users",
-    path: "/dashboard/admin/manage-users",
-    icon: "solar:users-group-rounded-bold-duotone",
-  },
-  {
-    title: "Manage All Artworks",
-    path: "/dashboard/admin/manage-artworks",
-    icon: "solar:gallery-wide-bold-duotone",
-  },
-  {
-    title: "View All Transactions",
-    path: "/dashboard/admin/transactions",
-    icon: "solar:card-transfer-bold-duotone",
-  },
-  {
-    title: "Analytics Overview",
-    path: "/dashboard/admin/analytics",
-    icon: "solar:chart-2-bold-duotone",
-  },
-  {
-    title: "Charts",
-    path: "/dashboard/admin/charts",
-    icon: "solar:pie-chart-3-bold-duotone",
-  }
-];
+    {
+      title: "Dashboard Overview",
+      path: "/dashboard/admin",
+      icon: "solar:home-angle-bold-duotone",
+    },
+    {
+      title: "Manage Users",
+      path: "/dashboard/admin/manage-users",
+      icon: "solar:users-group-rounded-bold-duotone",
+    },
+    {
+      title: "Manage All Artworks",
+      path: "/dashboard/admin/manage-artworks",
+      icon: "solar:gallery-wide-bold-duotone",
+    },
+    {
+      title: "View All Transactions",
+      path: "/dashboard/admin/transactions",
+      icon: "solar:card-transfer-bold-duotone",
+    },
+    {
+      title: "Analytics Overview",
+      path: "/dashboard/admin/analytics",
+      icon: "solar:chart-2-bold-duotone",
+    },
+    {
+      title: "Charts",
+      path: "/dashboard/admin/charts",
+      icon: "solar:pie-chart-3-bold-duotone",
+    }
+  ];
 
+  const isUserOrBuyer = user?.role === "buyer" || user?.role === "user";
 
-const menuItems =
-  user?.role === "admin"
-    ? adminDashboard
-    : user?.role === "artist"
-    ? artistDashboard
-    : user?.role === "buyer"
-    ? userDashboard
-    : [];
+  const menuItems =
+    user?.role === "admin"
+      ? adminDashboard
+      : user?.role === "artist"
+      ? artistDashboard
+      : isUserOrBuyer
+      ? userDashboard
+      : [];
 
-const panelTitle =
-  user?.role === "admin"
-    ? "Admin Panel"
-    : user?.role === "artist"
-    ? "Artist Panel"
-    : user?.role === "buyer"
-    ? "User Panel"
-    : "Dashboard";
+  const panelTitle =
+    user?.role === "admin"
+      ? "Admin Panel"
+      : user?.role === "artist"
+      ? "Artist Panel"
+      : isUserOrBuyer
+      ? "User Panel"
+      : "Dashboard";
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -114,8 +126,8 @@ const panelTitle =
   };
 
   const isLinkActive = (path) => {
-    if (path === "/dashboard/artist") {
-      return pathname === "/dashboard/artist";
+    if (path === "/dashboard/artist" || path === "/dashboard/user" || path === "/dashboard/admin") {
+      return pathname === path;
     }
     return pathname.startsWith(path);
   };

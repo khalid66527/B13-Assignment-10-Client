@@ -2,7 +2,11 @@
 import React from 'react';
 import Link from 'next/link';
 
+import { useCart } from '@/lib/context/CartContext';
+import { Icon } from '@iconify/react';
+
 const ArtCard = ({ art }) => {
+  const { addToCart } = useCart();
   return (
     <div className="group relative bg-gradient-to-b from-[#161616] to-[#0A0A0A] rounded-[24px] overflow-hidden border border-white/5 hover:border-[#D4AF37]/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_-10px_rgba(212,175,55,0.25)] flex flex-col h-full">
       
@@ -36,13 +40,26 @@ const ArtCard = ({ art }) => {
           </span>
         </div>
 
-        {/* হোভার ওভারলে এবং ভিউ ডিটেইল বাটন */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-20">
-          <Link href={`/shop/${art._id || art.id}`}>
-            <button className="transform translate-y-10 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-75 bg-[#D4AF37] hover:bg-[#AA7C11] text-black font-extrabold tracking-wide py-3 px-8 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105">
-              View Masterpiece
+        {/* হোভার ওভারলে এবং অ্যাকশন বাটনসমূহ */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center gap-3 z-20 p-4">
+          <Link href={`/shop/${art._id || art.id}`} className="w-full max-w-[200px]">
+            <button className="w-full transform translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-75 bg-[#D4AF37] hover:bg-[#AA7C11] text-black font-extrabold tracking-wide py-2.5 px-4 rounded-full shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:scale-105 text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+              <Icon icon="solar:eye-bold" className="size-4" />
+              View Details
             </button>
           </Link>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(art);
+            }}
+            className="w-full max-w-[200px] transform translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 bg-[#1A1A1A]/90 hover:bg-[#252525] border border-[#D4AF37]/40 hover:border-[#D4AF37] text-white font-bold py-2.5 px-4 rounded-full text-xs flex items-center justify-center gap-1.5 hover:scale-105 transition-transform cursor-pointer"
+          >
+            <Icon icon="solar:cart-plus-bold" className="size-4 text-[#D4AF37]" />
+            Add to Cart
+          </button>
         </div>
         
         {/* স্মুথ শ্যাডো গ্রেডিয়েন্ট (ইমেইজ এবং টেক্সটের মাঝখানে ব্লেন্ডিংয়ের জন্য) */}

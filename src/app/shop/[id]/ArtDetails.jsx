@@ -5,9 +5,11 @@ import { Button } from "@heroui/react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { buynowStore } from '@/lib/actions/buynow';
+import { useCart } from '@/lib/context/CartContext';
 import CommentPage from './comment/CommentPage';
 
 const ArtDetails = ({ allArt, id, user }) => {
+    const { addToCart } = useCart();
     console.log('useData', user);
     const router = useRouter();
     const [isBuying, setIsBuying] = useState(false);
@@ -166,11 +168,20 @@ const ArtDetails = ({ allArt, id, user }) => {
                             />
                         </Button>
 
+                        {/* Add to Cart Button */}
+                        <Button
+                            onClick={() => addToCart(allArt)}
+                            className="w-full sm:w-auto px-6 bg-white/5 hover:bg-white/10 text-white border border-[#D4AF37]/30 hover:border-[#D4AF37] font-bold tracking-wide h-12 rounded-xl transition-all flex items-center justify-center gap-2 text-sm cursor-pointer hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+                        >
+                            <Icon icon="solar:cart-plus-bold" className="size-5 text-[#D4AF37]" />
+                            Add to Cart
+                        </Button>
+
                         {/* Buy Now Button */}
                         <Button
                             isLoading={isBuying}
                             onClick={handleBuyNow}
-                            className="w-full sm:flex-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] hover:brightness-110 text-black font-extrabold tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm"
+                            className="w-full sm:flex-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] hover:brightness-110 text-black font-extrabold tracking-wide h-12 rounded-xl transition-all shadow-[0_4px_25px_rgba(212,175,55,0.15)] flex items-center justify-center gap-2 text-sm cursor-pointer"
                         >
                             {!isBuying && <Icon icon="solar:cart-large-minimalistic-bold" className="size-5" />}
                             Buy Now

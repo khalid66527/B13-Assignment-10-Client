@@ -51,6 +51,11 @@ const DashboardSidebar = () => {
       icon: "solar:home-angle-bold-duotone",
     },
     {
+      title: "My Cart",
+      path: "/dashboard/user/cart",
+      icon: "solar:cart-large-4-bold-duotone",
+    },
+    {
       title: "Delivery Addresses",
       path: "/dashboard/user/addresses",
       icon: "solar:map-point-wave-bold-duotone",

@@ -7,11 +7,14 @@ import { usePathname } from "next/navigation";
 import { Button } from "@heroui/react";
 import { Magnifier, ChevronDown } from "@gravity-ui/icons";
 import { useSession, authClient } from "@/lib/auth-client";
+import { useCart } from "@/lib/context/CartContext";
+import { Icon } from "@iconify/react";
 
 export default function CustomHeader() {
   const { data: session, isPending } = useSession();
   const user = session?.user;
   const userRole = user?.role || null;
+  const { cartCount, openCart } = useCart();
 
 
   // console.log('userdata ', user)
@@ -194,8 +197,22 @@ export default function CustomHeader() {
 
        
 
-        {/* --- RIGHT SIDE: Search & Auth --- */}
-        <div className="flex flex-1 items-center justify-end gap-4 lg:gap-6">
+        {/* --- RIGHT SIDE: Search, Cart & Auth --- */}
+        <div className="flex flex-1 items-center justify-end gap-3 sm:gap-4 lg:gap-5">
+          {/* Shopping Cart Trigger */}
+          <button
+            onClick={openCart}
+            aria-label="View Cart"
+            className="relative p-2 rounded-xl text-[#e8dcb8] hover:text-white hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer group"
+          >
+            <Icon icon="solar:cart-large-4-bold-duotone" className="size-6 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black text-[10px] font-black size-5 rounded-full flex items-center justify-center shadow-lg border border-black animate-pulse">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </button>
+
           <button aria-label="Search" className="hidden lg:block text-[#e8dcb8] hover:text-white transition-colors">
             <Magnifier width={20} />
           </button>
@@ -323,6 +340,21 @@ export default function CustomHeader() {
             {session && (
               <>
                 <li className="border-t border-[#3a3c2f]/60 pt-4">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      openCart();
+                    }}
+                    className="text-2xl font-serif text-[#e8dcb8] hover:text-white transition-all flex items-center gap-3 group w-max cursor-pointer"
+                  >
+                    <span>My Cart</span>
+                    <span className="text-xs bg-[#D4AF37]/20 text-[#FFE58F] font-sans font-extrabold px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
+                      {cartCount} {cartCount === 1 ? "item" : "items"}
+                    </span>
+                    <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-3 transition-all duration-300 ml-1">→</span>
+                  </button>
+                </li>
+                <li>
                   {(userRole === "buyer" || userRole === "user") && (
                     <Link
                       href="/dashboard/user"

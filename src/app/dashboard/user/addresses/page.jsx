@@ -234,13 +234,22 @@ export default function UserAddressesPage() {
     }
   };
 
-  const handleDelete = async (addrId) => {
-    if (!confirm('Are you sure you want to delete this address?')) return;
+  const [addressToDelete, setAddressToDelete] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const handleOpenDeleteModal = (addr) => {
+    setAddressToDelete(addr);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!addressToDelete?._id) return;
     try {
-      setDeletingId(addrId);
-      await deleteUserAddress(addrId);
+      setDeletingId(addressToDelete._id);
+      await deleteUserAddress(addressToDelete._id);
       showNotification('Address removed successfully');
+      setIsDeleteModalOpen(false);
+      setAddressToDelete(null);
       await fetchAddresses();
     } catch (err) {
       console.error('Error deleting address:', err);
@@ -594,18 +603,14 @@ export default function UserAddressesPage() {
                       <span>Edit</span>
                     </button>
 
-                    {/* DELETE BUTTON -> DELETES FROM DATABASE */}
+                    {/* DELETE BUTTON -> OPENS CONFIRMATION MODAL */}
                     <button
-                      onClick={() => handleDelete(addr._id)}
+                      onClick={() => handleOpenDeleteModal(addr)}
                       disabled={deletingId === addr._id}
                       className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all text-xs flex items-center gap-1 cursor-pointer"
                       title="Delete Address"
                     >
-                      {deletingId === addr._id ? (
-                        <Icon icon="eos-icons:loading" className="size-4 animate-spin" />
-                      ) : (
-                        <Icon icon="solar:trash-bin-trash-linear" className="size-4" />
-                      )}
+                      <Icon icon="solar:trash-bin-trash-linear" className="size-4" />
                       <span>Delete</span>
                     </button>
                   </div>
@@ -801,6 +806,59 @@ export default function UserAddressesPage() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {isDeleteModalOpen && addressToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-md bg-gradient-to-b from-[#1C1414] to-[#121212] rounded-3xl shadow-2xl border border-red-500/30 overflow-hidden p-6 sm:p-7 text-center space-y-5">
+            <div className="size-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(239,68,68,0.15)]">
+              <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-white tracking-tight">Delete Delivery Address?</h3>
+              <p className="text-xs text-gray-400 leading-relaxed max-w-sm mx-auto">
+                Are you sure you want to permanently delete this address? This action cannot be undone.
+              </p>
+            </div>
+
+            {/* Address summary preview */}
+            <div className="p-3.5 rounded-2xl bg-[#181818] border border-white/5 text-left text-xs text-gray-300 space-y-1">
+              <div className="flex items-center justify-between font-bold text-white">
+                <span>{addressToDelete.fullName}</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 uppercase tracking-wider text-gray-400">
+                  {addressToDelete.label || 'Home'}
+                </span>
+              </div>
+              <p className="text-gray-400 text-[11px] truncate">
+                {addressToDelete.street}{addressToDelete.apartment ? `, ${addressToDelete.apartment}` : ''}
+              </p>
+              <p className="text-gray-500 text-[11px]">
+                {addressToDelete.thana ? `${addressToDelete.thana}, ` : ''}{addressToDelete.district || addressToDelete.city}, {addressToDelete.division || addressToDelete.state}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => { setIsDeleteModalOpen(false); setAddressToDelete(null); }}
+                className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-bold text-xs border border-white/10 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <Button
+                type="button"
+                onClick={handleConfirmDelete}
+                isLoading={deletingId === addressToDelete._id}
+                className="py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-110 text-white font-extrabold text-xs shadow-[0_4px_20px_rgba(239,68,68,0.25)] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Icon icon="solar:trash-bin-trash-bold" className="size-4" />
+                Delete Address
+              </Button>
+            </div>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { getCompanyArts } from "@/lib/api/arts";
+import { useCart } from "@/lib/context/CartContext";
 
 // Default fallback mock artworks if the database is empty
 const defaultArtworks = [
@@ -88,6 +89,7 @@ const ScrollRevealCard = ({ children, delayIndex }) => {
 };
 
 const AllArtCollections = () => {
+  const { addToCart } = useCart();
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,30 +103,43 @@ const AllArtCollections = () => {
         }
       })
       .catch((err) => {
-        console.error("Failed to load artworks from backend:", err);
+        console.error("Error fetching arts:", err);
         setArtworks(defaultArtworks);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
 
+  // Display only first 8 items for a clean grid layout
   const displayedArtworks = artworks.slice(0, 8);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-gray-300 py-16 px-4 md:px-8 lg:px-12">
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* Banner Section */}
-        <div className="text-center space-y-4">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#D4AF37] border border-[#D4AF37]/20 rounded-full px-3 py-1 bg-[#D4AF37]/5">
-            Curated Showcase
-          </span>
-          <h1 className="text-4xl md:text-5xl font-serif font-extrabold text-white tracking-tight">
-            Explore All <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFE58F] via-[#D4AF37] to-[#AA7C11]">Collections</span>
-          </h1>
-          <p className="text-sm text-gray-400 max-w-2xl mx-auto">
-            Browse through unique premium works of fine art, photography, sculptures, and modern digital compositions curated globally.
-          </p>
+    <section className="py-24 bg-[#0A0A0A] text-white relative overflow-hidden border-t border-zinc-900">
+      {/* Decorative Gold Radial Gradient */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[140px] pointer-events-none -z-10" />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/5 text-[#FFE58F] text-[10px] uppercase tracking-widest font-bold">
+              <Icon icon="solar:stars-minimalistic-bold" className="text-xs" />
+              Curated Masterpieces
+            </div>
+            <h2 className="text-3xl lg:text-4xl font-serif font-extrabold tracking-tight text-white">
+              Trending <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFE58F] via-[#D4AF37] to-[#AA7C11]">Collections</span>
+            </h2>
+            <p className="text-sm text-gray-400 max-w-lg leading-relaxed">
+              Explore handpicked, verified artworks from the world&apos;s most gifted artists.
+            </p>
+          </div>
+
+          <Link
+            href="/shop"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#D4AF37] hover:text-[#FFE58F] transition-colors group self-start md:self-auto border-b border-[#D4AF37]/30 pb-1"
+          >
+            View Entire Gallery
+            <Icon icon="solar:arrow-right-linear" className="transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
 
         {/* Art Gallery Grid with Scroll Animation */}
@@ -164,20 +179,33 @@ const AllArtCollections = () => {
                         </div>
 
                         {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 z-20">
-                          <p className="text-white font-serif text-sm font-bold text-center mb-1 line-clamp-2 px-2">
+                        <div className="absolute inset-0 bg-black/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 z-20 gap-2">
+                          <p className="text-white font-serif text-sm font-bold text-center mb-0.5 line-clamp-2 px-2">
                             {art.title || "Untitled"}
                           </p>
-                          <p className="text-[#D4AF37] text-[10px] uppercase tracking-wider font-semibold mb-4">
+                          <p className="text-[#D4AF37] text-[10px] uppercase tracking-wider font-semibold mb-2">
                             by {art.companyName || art.artistName || "Verified Artist"}
                           </p>
-                          <Link
-                            href={`/shop/${artId}`}
-                            className="flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-[11px] font-bold shadow-md hover:brightness-110 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0"
-                          >
-                            Acquire Artwork
-                            <Icon icon="solar:arrow-right-linear" className="text-xs" />
-                          </Link>
+                          <div className="flex flex-col gap-2 w-full max-w-[170px]">
+                            <Link
+                              href={`/shop/${artId}`}
+                              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-[#AA7C11] to-[#D4AF37] text-black text-[11px] font-bold shadow-md hover:brightness-110 transition-all text-center"
+                            >
+                              <Icon icon="solar:eye-bold" className="text-xs" />
+                              View Art
+                            </Link>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToCart(art);
+                              }}
+                              className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-[#D4AF37]/30 text-white text-[11px] font-bold transition-all cursor-pointer"
+                            >
+                              <Icon icon="solar:cart-plus-bold" className="text-xs text-[#D4AF37]" />
+                              Add to Cart
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -223,7 +251,7 @@ const AllArtCollections = () => {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
     

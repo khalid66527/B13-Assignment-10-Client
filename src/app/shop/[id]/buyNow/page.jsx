@@ -6,13 +6,17 @@ import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import { getPlanById, getUserSubscriptionByEmail, getFreshUserByEmail } from '@/lib/api/plans';
 import { getArtById } from '@/lib/api/arts';
+import { getUserAddresses } from '@/lib/api/address';
 
 const BuyNow = async ({ params }) => {
     const { id } = await params;
     const user = await getUserSession();
     const artworkData = await getArtById(id);
 
-    const buynowerPurchase = (user?.id ? await getBuynowByBuynower(user.id) : []) || [];
+    const [buynowerPurchase, userAddresses] = await Promise.all([
+        user?.id ? getBuynowByBuynower(user.id) : [],
+        (user?.email || user?.id) ? getUserAddresses(user?.email, user?.id) : []
+    ]);
 
     // Resolve real-time user plan ID directly from database/subscriptions
     let userPlanId = user?.plan || "buynower_free";
@@ -39,7 +43,7 @@ const BuyNow = async ({ params }) => {
 
     const plan = await getPlanById(userPlanId);
 
-    const currentPurchases = buynowerPurchase.length;
+    const currentPurchases = (buynowerPurchase || []).length;
     const normalizedPlanId = String(userPlanId).toLowerCase();
     const isPremium = normalizedPlanId.includes('premium');
     const isPro = normalizedPlanId.includes('pro');
@@ -127,7 +131,7 @@ const BuyNow = async ({ params }) => {
                 ) : (
                     /* 🛒 লিমিট বাকি থাকলে আপনার মেইন BuyNowPage রেন্ডার হবে */
                     <div className="transition-all duration-300">
-                        <BuyNowPage user={user} artwork={artworkData} id={id} />
+                        <BuyNowPage user={user} artwork={artworkData} id={id} initialAddresses={userAddresses} />
                     </div>
                 )}
 

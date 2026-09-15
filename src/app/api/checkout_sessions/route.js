@@ -23,6 +23,10 @@ export async function POST(request) {
       const artistName = formData.get('artistName')
       const companyName = formData.get('companyName')
       const price = formData.get('price')
+      const shippingAddress = formData.get('shipping_address') || ''
+      const shippingPhone = formData.get('shipping_phone') || ''
+      const shippingName = formData.get('shipping_name') || ''
+      const addressId = formData.get('address_id') || ''
 
       // Create Checkout Sessions for one-time artwork purchases with dynamic details.
       const session = await stripe.checkout.sessions.create({
@@ -52,6 +56,10 @@ export async function POST(request) {
           artistName,
           companyName,
           price,
+          addressId,
+          shippingName,
+          shippingPhone,
+          shippingAddress,
         },
         success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/shop/${artId}/buyNow`,

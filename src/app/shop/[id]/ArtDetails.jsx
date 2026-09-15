@@ -10,11 +10,14 @@ import CommentPage from './comment/CommentPage';
 
 const ArtDetails = ({ allArt, id, user }) => {
     const { addToCart } = useCart();
-    console.log('useData', user);
     const router = useRouter();
     const [isBuying, setIsBuying] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
-    console.log('buynow data ', allArt);
+    const [reviewStats, setReviewStats] = useState({
+        averageRating: 5.0,
+        totalReviews: 0,
+        photoReviewsCount: 0,
+    });
 
     if (!allArt) {
         return (
@@ -33,24 +36,7 @@ const ArtDetails = ({ allArt, id, user }) => {
             router.push(`/auth/signin?redirect=/shop/${id}/buyNow`);
             return;
         }
-        setIsBuying(true); // বাটনে লোডিং স্পিনার দেখাবে
-
-        
-        const artPayload = {
-            id,
-            title,
-            category,
-            price,
-            dimensions,
-            date,
-            image,
-            description,
-            companyName,
-            companyId,
-            buynowerName: user.name || "Unknown Buyer",
-            buynowerEmail: user.email || "No Email",
-            buynowerId: user.id || "No Id",
-        };
+        setIsBuying(true);
 
         try {
             setIsBuying(false);
@@ -64,10 +50,10 @@ const ArtDetails = ({ allArt, id, user }) => {
     return (
         <div className="max-w-6xl mx-auto bg-gradient-to-b from-[#161616]/90 to-[#0F0F0F]/95 backdrop-blur-xl border border-[#D4AF37]/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_0_50px_rgba(212,175,55,0.03)]">
 
-            {/* দুই কলাম লেআউট (মোবাইলে সিঙ্গেল কলাম, ট্যাবে/ডেস্কটপে ২ কলাম) */}
+            {/* দুই কলাম লেআউট */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
-                {/* 📸 বাম পাশ: ইমেজ সেকশন (১২ ভাগের ৫ ভাগ জায়গা নেবে) */}
+                {/* 📸 বাম পাশ: ইমেজ সেকশন */}
                 <div className="lg:col-span-5 w-full aspect-[4/5] rounded-3xl overflow-hidden bg-[#1A1A1A] border border-white/5 relative group shadow-2xl">
                     <img
                         src={image || "https://placehold.co/600x800/1a1a1a/ffffff?text=No+Image"}
@@ -80,15 +66,40 @@ const ArtDetails = ({ allArt, id, user }) => {
                     </div>
                 </div>
 
-                {/* 📝 ডান পাশ: টেক্সট এবং ইনফরমেশন (১২ ভাগের ৭ ভাগ জায়গা নেবে) */}
+                {/* 📝 ডান পাশ: টেক্সট এবং ইনফরমেশন */}
                 <div className="lg:col-span-7 space-y-6">
 
-                    {/* শিরোনাম ও প্রাইস */}
-                    <div className="space-y-2 border-b border-white/5 pb-4">
+                    {/* শিরোনাম, স্টার রেটিং ও প্রাইস */}
+                    <div className="space-y-3 border-b border-white/5 pb-4">
                         <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
                             {title}
                         </h1>
-                        <div className="flex items-center gap-2 text-2xl font-black text-[#D4AF37]">
+
+                        {/* ⭐ STAR RATING & PHOTO REVIEWS BADGE */}
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <a
+                                href="#collector-reviews-section"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#FFE58F] text-xs font-bold transition-all cursor-pointer shadow-sm"
+                            >
+                                <Icon icon="solar:star-bold" className="size-4 text-[#D4AF37]" />
+                                <span>{reviewStats.averageRating.toFixed(1)}</span>
+                                <span className="text-gray-400 font-normal">
+                                    ({reviewStats.totalReviews} {reviewStats.totalReviews === 1 ? 'review' : 'reviews'})
+                                </span>
+                            </a>
+
+                            {reviewStats.photoReviewsCount > 0 && (
+                                <a
+                                    href="#collector-reviews-section"
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-medium transition-colors"
+                                >
+                                    <Icon icon="solar:camera-bold" className="size-3.5 text-[#D4AF37]" />
+                                    <span>{reviewStats.photoReviewsCount} Photo {reviewStats.photoReviewsCount === 1 ? 'Review' : 'Reviews'}</span>
+                                </a>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-2xl font-black text-[#D4AF37] pt-1">
                             <span>${price}</span>
                             <span className="text-xs font-medium text-gray-500 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-md">USD</span>
                         </div>
@@ -192,8 +203,8 @@ const ArtDetails = ({ allArt, id, user }) => {
                 </div>
             </div>
 
-            {/* --- COMMENT SECTION --- */}
-            <CommentPage artworkId={id} user={user} />
+            {/* --- STAR RATING & PHOTO REVIEWS SECTION --- */}
+            <CommentPage artworkId={id} user={user} onStatsChange={setReviewStats} />
 
         </div>
     );

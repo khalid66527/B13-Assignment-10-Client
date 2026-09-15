@@ -76,11 +76,17 @@ const ArtCard = ({ art }) => {
           {art.title || 'Untitled Artwork'}
         </h3>
         
-        {/* অতিরিক্ত ইনফো (যেমন সাইজ বা ক্রিয়েশন ইয়ার) */}
+        {/* অতিরিক্ত ইনফো ও স্টার রেটিং */}
         <div className="flex items-center justify-between mt-3">
-          <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold">
-            Original Piece
-          </p>
+          <div className="flex items-center gap-1.5 text-[11px] text-[#FFE58F] font-bold">
+            <Icon icon="solar:star-bold" className="size-3.5 text-[#D4AF37]" />
+            <span>{typeof art.rating === 'number' ? art.rating.toFixed(1) : (art.rating || '5.0')}</span>
+            <span className="text-gray-500 font-normal text-[10px]">
+              {art.reviewsCount && Number(art.reviewsCount) > 0
+                ? `(${art.reviewsCount} ${Number(art.reviewsCount) === 1 ? 'review' : 'reviews'})`
+                : '(Collector Verified)'}
+            </span>
+          </div>
           <div className="opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-500 text-[#D4AF37]">
             →
           </div>

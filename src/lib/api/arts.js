@@ -1,15 +1,17 @@
 
 const baseUrl = process.env.NEXT_PUBLIC_URL;
 
-export const getCompanyArts = async () =>{
-    const res = await fetch (`${baseUrl}/api/arts`)
-    return res.json()
-}
+export const getCompanyArts = async () => {
+    const url = baseUrl || "http://localhost:5000";
+    const res = await fetch(`${url}/api/arts`, { cache: 'no-store' });
+    return res.json();
+};
 
 export const getArtById = async (id) => {
-    const res = await fetch(`${baseUrl}/api/arts/${id}`);
+    const url = baseUrl || "http://localhost:5000";
+    const res = await fetch(`${url}/api/arts/${id}`, { cache: 'no-store' });
     return res.json();
-}
+};
 
 export const updateArt = async (id, data) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("jwt_token") : "";

@@ -20,6 +20,7 @@ export const serverFetch = async (path) => {
     try {
         const authHeaders = await getAuthHeaders();
         const res = await fetch(`${baseUrl}${path}`, {
+            cache: 'no-store',
             headers: {
                 ...authHeaders
             }
@@ -38,17 +39,20 @@ export const serverFetch = async (path) => {
     }
 };
 
-export const serverMutation = async (path, data) => {
+export const serverMutation = async (path, data, method = 'POST') => {
     try {
         const authHeaders = await getAuthHeaders();
-        const res = await fetch(`${baseUrl}${path}`, {
-            method: 'POST',
+        const options = {
+            method: method,
             headers: {
-                'Content-Type': 'application/json',
                 ...authHeaders
-            },
-            body: JSON.stringify(data)
-        });
+            }
+        };
+        if (data !== undefined && data !== null && method !== 'DELETE') {
+            options.headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(data);
+        }
+        const res = await fetch(`${baseUrl}${path}`, options);
         const text = await res.text();
         if (!text || text.trim().startsWith("<")) {
             return { error: "Non-JSON response from server" };
@@ -59,3 +63,7 @@ export const serverMutation = async (path, data) => {
         return { error: e.message };
     }
 };
+
+export const serverPut = async (path, data) => serverMutation(path, data, 'PUT');
+export const serverPatch = async (path, data) => serverMutation(path, data, 'PATCH');
+export const serverDelete = async (path) => serverMutation(path, null, 'DELETE');

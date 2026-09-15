@@ -51,6 +51,11 @@ const DashboardSidebar = () => {
       icon: "solar:home-angle-bold-duotone",
     },
     {
+      title: "Delivery Addresses",
+      path: "/dashboard/user/addresses",
+      icon: "solar:map-point-wave-bold-duotone",
+    },
+    {
       title: "Profile Management",
       path: "/dashboard/user/profile",
       icon: "solar:user-circle-bold-duotone",

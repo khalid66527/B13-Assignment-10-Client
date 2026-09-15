@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { email } from 'better-auth';
 import { createSubscription } from '@/lib/actions/subscription';
 
+import { getUserSession } from '@/lib/core/session';
+
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams;
 
@@ -14,25 +16,30 @@ export default async function Success({ searchParams }) {
 
   const {
     status,
-    customer_details: { email: customerEmail },
+    customer_details,
     metadata
   } = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ['line_items', 'payment_intent']
   });
+
+  const customerEmail = customer_details?.email;
 
   if (status === 'open') {
     return redirect('/');
   }
 
   if (status === 'complete') {
+    const user = await getUserSession();
+    const emailToUpdate = user?.email || metadata?.userEmail || customerEmail;
 
-    const subsInfo ={
-        email: customerEmail,
-        planId: metadata.planId,
-    }
+    const subsInfo = {
+      email: emailToUpdate,
+      userId: user?.id || metadata?.userId,
+      planId: metadata?.planId,
+    };
 
-    const result = await createSubscription(subsInfo)
-    console.log(result);
+    const result = await createSubscription(subsInfo);
+    console.log("Subscription created:", result);
 
 
 

@@ -4,7 +4,7 @@ import { getUserSession } from '@/lib/core/session';
 import { getBuynowByBuynower } from '@/lib/api/buynow';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
-import { getPlanById } from '@/lib/api/plans';
+import { getPlanById, getUserSubscriptionByEmail, getFreshUserByEmail } from '@/lib/api/plans';
 import { getArtById } from '@/lib/api/arts';
 
 const BuyNow = async ({ params }) => {
@@ -12,20 +12,45 @@ const BuyNow = async ({ params }) => {
     const user = await getUserSession();
     const artworkData = await getArtById(id);
 
-    // ধরি ব্যাকএন্ড থেকে এই ইউজারের আগের কেনাকাটার লিস্ট আসছে
-    const buynowerPurchase = await getBuynowByBuynower(user.id) ;
-    console.log('object',buynowerPurchase );
+    const buynowerPurchase = (user?.id ? await getBuynowByBuynower(user.id) : []) || [];
 
-    const plan =  await getPlanById(user?.plan)
-   
-    console.log("maxPurchaseMoth",plan);
+    // Resolve real-time user plan ID directly from database/subscriptions
+    let userPlanId = user?.plan || "buynower_free";
+    if (user?.email) {
+        const [freshSub, freshUser] = await Promise.all([
+            getUserSubscriptionByEmail(user.email),
+            getFreshUserByEmail(user.email)
+        ]);
+
+        const subPlan = freshSub?.planId ? String(freshSub.planId).toLowerCase() : "";
+        const userPlan = freshUser?.plan ? String(freshUser.plan).toLowerCase() : "";
+        const sessionPlan = user?.plan ? String(user.plan).toLowerCase() : "";
+
+        if (subPlan.includes('premium') || userPlan.includes('premium') || sessionPlan.includes('premium')) {
+            userPlanId = "buynower_Premium";
+        } else if (subPlan.includes('pro') || userPlan.includes('pro') || sessionPlan.includes('pro')) {
+            userPlanId = "buynower_Pro";
+        } else if (freshSub?.planId) {
+            userPlanId = freshSub.planId;
+        } else if (freshUser?.plan) {
+            userPlanId = freshUser.plan;
+        }
+    }
+
+    const plan = await getPlanById(userPlanId);
 
     const currentPurchases = buynowerPurchase.length;
-    const maxPurchases = plan?.maxPurchaseMoth || 3;
+    const normalizedPlanId = String(userPlanId).toLowerCase();
+    const isPremium = normalizedPlanId.includes('premium');
+    const isPro = normalizedPlanId.includes('pro');
+    const planName = isPremium ? "Premium" : isPro ? "Pro" : (plan?.name || "Free");
+    const maxPurchases = isPremium ? 999999 : isPro ? 9 : (plan?.maxPurchaseMoth || 3);
     const isLimitExceeded = currentPurchases >= maxPurchases;
     
     // প্রোগ্রেস বারের পার্সেন্টেজ হিসাব
-    const progressPercentage = Math.min((currentPurchases / maxPurchases) * 100, 100);
+    const progressPercentage = isPremium 
+        ? Math.min((currentPurchases / 20) * 100, 100)
+        : Math.min((currentPurchases / maxPurchases) * 100, 100);
 
     return (
         <div className="min-h-screen bg-[#0A0A0A] text-gray-300 py-10 px-4 sm:px-6 lg:px-8">
@@ -45,11 +70,11 @@ const BuyNow = async ({ params }) => {
                                 <div className="flex items-center gap-2">
                                     <h2 className="text-lg font-bold text-white">Purchase Limit Tracker</h2>
                                     <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#D4AF37]/10 text-[#FFE58F] border border-[#D4AF37]/20">
-                                        {plan?.name || "Free"} Plan
+                                        {planName} Plan
                                     </span>
                                 </div>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    You have used <span className="text-white font-bold">{currentPurchases}</span> out of <span className="text-[#D4AF37] font-bold">{maxPurchases}</span> monthly allowed artwork purchases.
+                                    You have used <span className="text-white font-bold">{currentPurchases}</span> out of <span className="text-[#D4AF37] font-bold">{isPremium ? "Unlimited" : maxPurchases}</span> monthly allowed artwork purchases.
                                 </p>
                             </div>
                         </div>
@@ -59,7 +84,7 @@ const BuyNow = async ({ params }) => {
                             <div className="flex justify-between text-xs font-semibold">
                                 <span className="text-gray-500">Monthly Usage</span>
                                 <span className={isLimitExceeded ? "text-red-400 font-bold" : "text-[#D4AF37]"}>
-                                    {currentPurchases}/{maxPurchases}
+                                    {currentPurchases}/{isPremium ? "Unlimited" : maxPurchases}
                                 </span>
                             </div>
                             <div className="w-full h-2.5 bg-white/5 rounded-full overflow-hidden border border-white/5">

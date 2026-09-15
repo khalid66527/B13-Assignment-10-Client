@@ -72,7 +72,12 @@ export async function POST(request) {
           },
         ],
         mode: 'subscription',
-        metadata: { planId },
+        metadata: {
+          checkout_type: 'subscription',
+          planId,
+          userEmail: user?.email || '',
+          userId: user?.id || '',
+        },
         success_url: `${origin}/plans/success?session_id={CHECKOUT_SESSION_ID}`,
       });
 

@@ -1,4 +1,4 @@
-const baseUrl = process.env.NEXT_PUBLIC_URL;
+const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:5000";
 
 const getAuthHeaders = async () => {
     let token = "";
@@ -16,26 +16,46 @@ const getAuthHeaders = async () => {
     return token ? { "Authorization": `Bearer ${token}` } : {};
 };
 
-export const serverFetch = async(path)=>{
-    const authHeaders = await getAuthHeaders();
-    const res = await fetch(`${baseUrl}${path}`, {
-        headers: {
-            ...authHeaders
+export const serverFetch = async (path) => {
+    try {
+        const authHeaders = await getAuthHeaders();
+        const res = await fetch(`${baseUrl}${path}`, {
+            headers: {
+                ...authHeaders
+            }
+        });
+        if (!res.ok) {
+            return null;
         }
-    });
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
-}
+        const text = await res.text();
+        if (!text || text.trim().startsWith("<")) {
+            return null;
+        }
+        return JSON.parse(text);
+    } catch (e) {
+        console.error(`serverFetch error on ${path}:`, e.message);
+        return null;
+    }
+};
 
 export const serverMutation = async (path, data) => {
-    const authHeaders = await getAuthHeaders();
-    const res = await fetch(`${baseUrl}${path}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders
-        },
-        body: JSON.stringify(data)
-    });
-    return res.json();
-}
+    try {
+        const authHeaders = await getAuthHeaders();
+        const res = await fetch(`${baseUrl}${path}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...authHeaders
+            },
+            body: JSON.stringify(data)
+        });
+        const text = await res.text();
+        if (!text || text.trim().startsWith("<")) {
+            return { error: "Non-JSON response from server" };
+        }
+        return JSON.parse(text);
+    } catch (e) {
+        console.error(`serverMutation error on ${path}:`, e.message);
+        return { error: e.message };
+    }
+};

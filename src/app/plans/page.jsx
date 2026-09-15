@@ -1,29 +1,56 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
+import { getUserSession } from '@/lib/core/session';
+import { getUserSubscriptionByEmail, getFreshUserByEmail } from '@/lib/api/plans';
 
-const SubscriptionOverviewPage = () => {
+const SubscriptionOverviewPage = async () => {
+    const user = await getUserSession();
+    let currentPlanId = user?.plan || "buynower_free";
+    if (user?.email) {
+        const [freshSub, freshUser] = await Promise.all([
+            getUserSubscriptionByEmail(user.email),
+            getFreshUserByEmail(user.email)
+        ]);
+
+        const subPlan = freshSub?.planId ? String(freshSub.planId).toLowerCase() : "";
+        const userPlan = freshUser?.plan ? String(freshUser.plan).toLowerCase() : "";
+        const sessionPlan = user?.plan ? String(user.plan).toLowerCase() : "";
+
+        if (subPlan.includes('premium') || userPlan.includes('premium') || sessionPlan.includes('premium')) {
+            currentPlanId = "buynower_Premium";
+        } else if (subPlan.includes('pro') || userPlan.includes('pro') || sessionPlan.includes('pro')) {
+            currentPlanId = "buynower_Pro";
+        } else if (freshSub?.planId) {
+            currentPlanId = freshSub.planId;
+        } else if (freshUser?.plan) {
+            currentPlanId = freshUser.plan;
+        }
+    }
+
+    const normPlan = String(currentPlanId).toLowerCase();
+
     // ইমেজের ডাটা স্ট্রাকচার
     const plan = [
         {
-            name: 'Free ',
-            id:'buynower_free',
+            name: 'Free',
+            id: 'buynower_free',
             limit: '3 paintings',
             price: '$0',
-            isCurrent: true
+            isCurrent: !normPlan || normPlan === 'buynower_free' || normPlan === 'free'
         },
         {
             name: 'Pro',
-            id:'buynower_Pro',
-            limit:'9 paintings',
+            id: 'buynower_Pro',
+            limit: '9 paintings',
             price: '$9.99',
-            isCurrent: false
+            isCurrent: normPlan.includes('pro')
         },
         {
             name: 'Premium',
-            id:'buynower_Premium',
+            id: 'buynower_Premium',
             limit: 'Unlimited',
             price: '$19.99',
-            isCurrent: false
+            isCurrent: normPlan.includes('premium')
         }
     ];
 

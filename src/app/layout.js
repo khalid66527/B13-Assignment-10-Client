@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { CartProvider } from "@/lib/context/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
+import { AICuratorProvider } from "@/lib/context/AICuratorContext";
+import AICuratorChatbot from "@/components/ai/AICuratorChatbot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,12 +49,15 @@ export default function RootLayout({ children }) {
       </head>
       <body className="" suppressHydrationWarning={true}>
         <CartProvider>
-          <Navbar />
-          <CartDrawer />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <AICuratorProvider>
+            <Navbar />
+            <CartDrawer />
+            <AICuratorChatbot />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </AICuratorProvider>
         </CartProvider>
       </body>
     </html>

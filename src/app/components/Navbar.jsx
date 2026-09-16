@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@heroui/react";
-import { Magnifier, ChevronDown } from "@gravity-ui/icons";
+import { ChevronDown } from "@gravity-ui/icons";
 import { useSession, authClient } from "@/lib/auth-client";
 import { useCart } from "@/lib/context/CartContext";
+import { useAICurator } from "@/lib/context/AICuratorContext";
 import { Icon } from "@iconify/react";
 
 export default function CustomHeader() {
@@ -15,6 +16,7 @@ export default function CustomHeader() {
   const user = session?.user;
   const userRole = user?.role || null;
   const { cartCount, openCart } = useCart();
+  const { openCurator } = useAICurator();
 
 
   // console.log('userdata ', user)
@@ -198,7 +200,20 @@ export default function CustomHeader() {
        
 
         {/* --- RIGHT SIDE: Search, Cart & Auth --- */}
-        <div className="flex flex-1 items-center justify-end gap-3 sm:gap-4 lg:gap-5">
+        <div className="flex flex-1 items-center justify-end gap-2.5 sm:gap-3 lg:gap-4">
+          {/* AI Curator Trigger Button (Visible when logged in) */}
+          {session && (
+            <button
+              onClick={() => openCurator()}
+              title="ArtHall AI Curator (AI Art Advisor)"
+              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#1c1d16] via-[#24261d] to-[#1a1b14] border border-[#D4AF37]/50 text-[#FFE58F] hover:text-white hover:border-[#D4AF37] hover:shadow-[0_0_15px_rgba(212,175,55,0.35)] transition-all duration-300 text-xs font-bold cursor-pointer group"
+            >
+              <Icon icon="solar:stars-minimalistic-bold-duotone" className="size-4 text-[#D4AF37] group-hover:rotate-12 transition-transform" />
+              <span className="hidden md:inline font-sans">AI Curator</span>
+              <span className="inline-block size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            </button>
+          )}
+
           {/* Shopping Cart Trigger */}
           <button
             onClick={openCart}
@@ -211,10 +226,6 @@ export default function CustomHeader() {
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
-          </button>
-
-          <button aria-label="Search" className="hidden lg:block text-[#e8dcb8] hover:text-white transition-colors">
-            <Magnifier width={20} />
           </button>
 
           {isPending ? (
@@ -250,6 +261,20 @@ export default function CustomHeader() {
                       </span>
                     )}
                   </div>
+
+                  <button
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      openCurator();
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-[#FFE58F] hover:text-white hover:bg-white/5 transition-colors text-sm flex items-center justify-between cursor-pointer font-medium"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Icon icon="solar:stars-minimalistic-bold-duotone" className="size-4 text-[#D4AF37]" />
+                      <span>AI Art Curator</span>
+                    </span>
+                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#FFE58F]">AI</span>
+                  </button>
 
                   <Link href="/profile" className={dropdownItemClass} onClick={() => setIsProfileOpen(false)}>
                     Profile
@@ -340,6 +365,23 @@ export default function CustomHeader() {
             {session && (
               <>
                 <li className="border-t border-[#3a3c2f]/60 pt-4">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      openCurator();
+                    }}
+                    className="w-full text-left text-2xl font-serif text-[#FFE58F] hover:text-white transition-all flex items-center justify-between group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon icon="solar:stars-minimalistic-bold-duotone" className="size-6 text-[#D4AF37]" />
+                      <span>✨ AI Curator</span>
+                    </div>
+                    <span className="text-xs uppercase font-mono px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#FFE58F] border border-[#D4AF37]/30">
+                      Advisor
+                    </span>
+                  </button>
+                </li>
+                <li>
                   <button
                     onClick={() => {
                       setIsMenuOpen(false);

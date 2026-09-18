@@ -45,12 +45,18 @@ html.light .bg-black {
 
 /* 2. Top Headers & Navbars */
 html.light header,
-html.light nav,
-html.light header *[class*="bg-[#0A0A0A]"],
-html.light header *[class*="bg-[#121212]"] {
-  background-color: rgba(255, 255, 255, 0.96) !important;
-  border-color: #E2E8F0 !important;
+html.light .site-header {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
   color: #0F172A !important;
+}
+
+html.light header nav,
+html.light .site-nav {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* 3. Universal Cards, Panels, Sidebars & Hero Containers */

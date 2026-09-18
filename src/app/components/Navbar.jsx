@@ -118,10 +118,10 @@ export default function CustomHeader() {
 
   return (
     <header 
-      className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A0A0A]/85 backdrop-blur-xl flex flex-col"
+      className="site-header sticky top-0 z-50 w-full border-b border-white/5 bg-[#0A0A0A]/85 backdrop-blur-xl flex flex-col"
     >
       {/* --- TOP NAVBAR SECTION --- */}
-      <nav className="mx-auto flex h-20 w-full w-10/12 items-center justify-between px-4  lg:px-8 relative z-20">
+      <nav className="site-nav mx-auto flex h-20 w-[88%] max-w-[1400px] items-center justify-between px-2 sm:px-4 relative z-20">
         
         
 
@@ -186,13 +186,13 @@ export default function CustomHeader() {
 
          {/* --- CENTER: Logo --- */}
         <div className="flex flex-1 items-center justify-center">
-          <Link href="/">
+          <Link href="/" className="flex items-center justify-center py-2 group">
             <Image
               src="/image/logo.png"
               alt="ArtHub Logo"
-              width={100}
-              height={40}
-              className="object-contain transition-transform hover:scale-105 duration-300 w-auto h-auto"
+              width={90}
+              height={38}
+              className="object-contain h-9 sm:h-10 max-h-10 w-auto transition-transform group-hover:scale-105 duration-300"
               priority
             />
           </Link>
@@ -202,32 +202,22 @@ export default function CustomHeader() {
 
         {/* --- RIGHT SIDE: Search, Cart & Auth --- */}
         <div className="flex flex-1 items-center justify-end gap-2.5 sm:gap-3 lg:gap-4">
-          {/* AI Curator Trigger Button (Visible when logged in) */}
+
+          {/* Shopping Cart Trigger (Visible only when logged in) */}
           {session && (
             <button
-              onClick={() => openCurator()}
-              title="ArtHall AI Curator (AI Art Advisor)"
-              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#1c1d16] via-[#24261d] to-[#1a1b14] border border-[#D4AF37]/50 text-[#FFE58F] hover:text-white hover:border-[#D4AF37] hover:shadow-[0_0_15px_rgba(212,175,55,0.35)] transition-all duration-300 text-xs font-bold cursor-pointer group"
+              onClick={openCart}
+              aria-label="View Cart"
+              className="relative p-2 rounded-xl text-[#e8dcb8] hover:text-white hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer group"
             >
-              <Icon icon="solar:stars-minimalistic-bold-duotone" className="size-4 text-[#D4AF37] group-hover:rotate-12 transition-transform" />
-              <span className="hidden md:inline font-sans">AI Curator</span>
-              <span className="inline-block size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <Icon icon="solar:cart-large-4-bold-duotone" className="size-6 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black text-[10px] font-black size-5 rounded-full flex items-center justify-center shadow-lg border border-black animate-pulse">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
             </button>
           )}
-
-          {/* Shopping Cart Trigger */}
-          <button
-            onClick={openCart}
-            aria-label="View Cart"
-            className="relative p-2 rounded-xl text-[#e8dcb8] hover:text-white hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer group"
-          >
-            <Icon icon="solar:cart-large-4-bold-duotone" className="size-6 text-[#D4AF37] group-hover:scale-110 transition-transform" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#AA7C11] text-black text-[10px] font-black size-5 rounded-full flex items-center justify-center shadow-lg border border-black animate-pulse">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </button>
 
           {isPending ? (
             <div className="w-8 h-8 rounded-full border border-gray-700 animate-pulse bg-gray-800"></div>
@@ -360,7 +350,7 @@ export default function CustomHeader() {
           isMenuOpen ? "max-h-[850px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="flex flex-col md:flex-row p-8 gap-10">
+        <div className="flex flex-col md:flex-row p-8 gap-10 w-[88%] max-w-[1400px] mx-auto">
           <ul className="flex flex-col py-5 gap-6 w-full md:w-1/2">
             {["About", "Shop", "Team", "Plans"].map((item) => (
               <li key={item}>

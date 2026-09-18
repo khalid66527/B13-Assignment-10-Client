@@ -320,7 +320,7 @@ export default function AICuratorChatbot() {
     }
   };
 
-  if (!session) return null;
+  // Available to all users (authenticated and guests)
 
   return (
     <>

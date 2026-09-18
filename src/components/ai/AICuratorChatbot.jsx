@@ -19,10 +19,13 @@ export default function AICuratorChatbot() {
 
   const storageKey = `arthall_ai_curator_sessions_${userKey}`;
 
-  // State for all saved sessions and the active session ID
+  // State for all saved sessions and active session ID
   const [sessions, setSessions] = useState([]);
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+
+  // Theme state synced with root html element
+  const [theme, setTheme] = useState("dark");
 
   // Active chat messages
   const [messages, setMessages] = useState([]);
@@ -32,6 +35,39 @@ export default function AICuratorChatbot() {
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Sync theme with document.documentElement
+  useEffect(() => {
+    const isLight = document.documentElement.classList.contains("light");
+    setTheme(isLight ? "light" : "dark");
+
+    const observer = new MutationObserver(() => {
+      const currentLight = document.documentElement.classList.contains("light");
+      setTheme(currentLight ? "light" : "dark");
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleCuratorTheme = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const isCurrentlyLight = document.documentElement.classList.contains("light");
+    const next = isCurrentlyLight ? "dark" : "light";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    if (next === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+  };
 
   const createInitialWelcomeMessage = () => ({
     id: "welcome-" + Date.now(),
@@ -58,7 +94,6 @@ export default function AICuratorChatbot() {
       console.error("Error reading saved curator sessions:", e);
     }
 
-    // Default new session if none exists
     const initialSessionId = "session-" + Date.now();
     const initialWelcome = createInitialWelcomeMessage();
     const defaultSession = {
@@ -79,7 +114,6 @@ export default function AICuratorChatbot() {
       const targetId = sessionId || prevSessions[0]?.id;
       let existingIndex = prevSessions.findIndex((s) => s.id === targetId);
 
-      // Generate a title based on the first user query if not already custom
       let sessionTitle = "Art Consultation";
       const firstUserMsg = updatedMessages.find((m) => m.role === "user");
       if (firstUserMsg && firstUserMsg.content) {
@@ -117,7 +151,6 @@ export default function AICuratorChatbot() {
     });
   };
 
-  // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -131,7 +164,6 @@ export default function AICuratorChatbot() {
     }
   }, [isOpen, messages, showHistory]);
 
-  // Handle external initial prompt
   useEffect(() => {
     if (initialPrompt && isOpen) {
       handleSendMessage(initialPrompt);
@@ -139,7 +171,6 @@ export default function AICuratorChatbot() {
     }
   }, [initialPrompt, isOpen]);
 
-  // Quick prompt suggestions
   const quickPrompts = [
     { label: "🔥 Top Trending Paintings", text: "Show me the top trending paintings and sculptures in ArtHall." },
     { label: "💰 Art Under $500", text: "Can you recommend premium artworks under $500?" },
@@ -147,7 +178,6 @@ export default function AICuratorChatbot() {
     { label: "✨ Best Rated Artworks", text: "What are the highest rated collector artworks available right now?" },
   ];
 
-  // Start a new chat session
   const handleNewChat = () => {
     const newSessionId = "session-" + Date.now();
     const initialWelcome = createInitialWelcomeMessage();
@@ -171,14 +201,12 @@ export default function AICuratorChatbot() {
     }
   };
 
-  // Switch to a past session
   const handleSelectSession = (sessionItem) => {
     setActiveSessionId(sessionItem.id);
     setMessages(sessionItem.messages || [createInitialWelcomeMessage()]);
     setShowHistory(false);
   };
 
-  // Delete a specific session
   const handleDeleteSession = (sessionIdToDelete, e) => {
     e.stopPropagation();
     const filtered = sessions.filter((s) => s.id !== sessionIdToDelete);
@@ -201,7 +229,6 @@ export default function AICuratorChatbot() {
     }
   };
 
-  // Clear all history
   const handleClearAllHistory = () => {
     if (window.confirm("Are you sure you want to clear all your AI Curator chat history?")) {
       localStorage.removeItem(storageKey);
@@ -209,7 +236,6 @@ export default function AICuratorChatbot() {
     }
   };
 
-  // Send message
   const handleSendMessage = async (customText = null) => {
     const textToSend = typeof customText === "string" ? customText : inputValue;
     if (!textToSend.trim() || isLoading) return;
@@ -228,7 +254,6 @@ export default function AICuratorChatbot() {
     setIsLoading(true);
 
     try {
-      // Build conversation history for AI context
       const chatHistory = updatedWithUser
         .filter((m) => !m.id.startsWith("welcome-"))
         .slice(-6)
@@ -295,7 +320,6 @@ export default function AICuratorChatbot() {
     }
   };
 
-  // Only render if user is logged in
   if (!session) return null;
 
   return (
@@ -306,22 +330,20 @@ export default function AICuratorChatbot() {
           <button
             onClick={() => openCurator()}
             aria-label="Open AI Art Curator"
-            className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#1c1d17] via-[#141510] to-[#0d0e0a] border border-[#D4AF37]/50 shadow-[0_8px_32px_rgba(212,175,55,0.25)] hover:shadow-[0_12px_40px_rgba(212,175,55,0.45)] hover:border-[#D4AF37] hover:scale-105 transition-all duration-300 cursor-pointer"
+            className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-white dark:bg-gradient-to-r dark:from-[#1c1d17] dark:via-[#141510] dark:to-[#0d0e0a] border border-amber-600/30 dark:border-[#D4AF37]/50 shadow-[0_8px_32px_rgba(217,119,6,0.15)] dark:shadow-[0_8px_32px_rgba(212,175,55,0.25)] hover:shadow-xl hover:border-amber-600 dark:hover:border-[#D4AF37] hover:scale-105 transition-all duration-300 cursor-pointer"
           >
-            {/* Pulsing Sparkle Ring */}
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE58F] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#D4AF37]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 dark:bg-[#FFE58F] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-600 dark:bg-[#D4AF37]"></span>
             </span>
 
-            {/* Glowing Icon */}
-            <div className="size-8 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#AA7C11] flex items-center justify-center text-black shadow-inner">
+            <div className="size-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 dark:from-[#D4AF37] dark:to-[#AA7C11] flex items-center justify-center text-white dark:text-black shadow-inner">
               <Icon icon="solar:stars-minimalistic-bold-duotone" className="size-5 animate-spin-slow" />
             </div>
 
             <div className="flex flex-col text-left">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[#D4AF37]">AI Curator</span>
-              <span className="text-xs font-semibold text-white group-hover:text-[#FFE58F] transition-colors">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-amber-700 dark:text-[#D4AF37]">AI Curator</span>
+              <span className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-[#FFE58F] transition-colors">
                 Personal Art Advisor
               </span>
             </div>
@@ -338,32 +360,46 @@ export default function AICuratorChatbot() {
             className="fixed inset-0 bg-black/60 backdrop-blur-sm sm:hidden pointer-events-auto transition-opacity"
           />
 
-          <div className="relative w-full sm:w-[450px] md:w-[480px] h-[92vh] sm:h-[660px] bg-[#0E0F0C] border border-[#3A3C2F] sm:rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden pointer-events-auto z-10 animate-fadeUp">
+          <div className="ai-curator-modal relative w-full sm:w-[450px] md:w-[480px] h-[92vh] sm:h-[660px] bg-white dark:bg-[#0E0F0C] border border-slate-200 dark:border-[#3A3C2F] sm:rounded-3xl shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden pointer-events-auto z-10 animate-fadeUp transition-colors duration-200">
             
             {/* --- HEADER --- */}
-            <div className="px-5 py-3.5 border-b border-[#2A2C22] bg-[#141510]/95 backdrop-blur-md flex items-center justify-between">
+            <div className="ai-curator-header px-5 py-3.5 border-b border-slate-200 dark:border-[#2A2C22] bg-white/98 dark:bg-[#141510]/95 backdrop-blur-md flex items-center justify-between transition-colors duration-200">
               <div className="flex items-center gap-3">
-                <div className="relative size-10 rounded-2xl bg-gradient-to-tr from-[#AA7C11] via-[#D4AF37] to-[#FFE58F] p-0.5 shadow-lg">
-                  <div className="w-full h-full bg-[#0E0F0C] rounded-[14px] flex items-center justify-center">
-                    <Icon icon="solar:magic-stick-3-bold-duotone" className="size-5 text-[#D4AF37]" />
+                <div className="relative size-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 dark:from-[#AA7C11] dark:via-[#D4AF37] dark:to-[#FFE58F] p-0.5 shadow-md">
+                  <div className="w-full h-full bg-slate-50 dark:bg-[#0E0F0C] rounded-[14px] flex items-center justify-center">
+                    <Icon icon="solar:magic-stick-3-bold-duotone" className="size-5 text-amber-700 dark:text-[#D4AF37]" />
                   </div>
-                  <span className="absolute bottom-0 right-0 size-2.5 bg-emerald-500 rounded-full border-2 border-[#0E0F0C]"></span>
+                  <span className="absolute bottom-0 right-0 size-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0E0F0C]"></span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-serif font-bold text-white tracking-wide">
+                    <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white tracking-wide">
                       ArtHall AI Curator
                     </h3>
-                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#FFE58F] border border-[#D4AF37]/30">
+                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-amber-100 dark:bg-[#D4AF37]/20 text-amber-800 dark:text-[#FFE58F] border border-amber-300 dark:border-[#D4AF37]/30 font-bold">
                       Gemini 3.6
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-400">Intelligent Catalog Matchmaker & Stylist</p>
+                  <p className="text-[11px] text-slate-500 dark:text-gray-400">Intelligent Catalog Matchmaker & Stylist</p>
                 </div>
               </div>
 
               {/* Action Buttons in Header */}
               <div className="flex items-center gap-1">
+                {/* Theme Toggle Button inside Curator Header */}
+                <button
+                  onClick={toggleCuratorTheme}
+                  title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+                  aria-label="Toggle Theme"
+                  className="p-2 rounded-xl text-slate-500 hover:text-amber-700 dark:text-gray-400 dark:hover:text-[#FFE58F] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                >
+                  {theme === "dark" ? (
+                    <Icon icon="solar:sun-2-bold-duotone" className="size-4 text-[#D4AF37]" />
+                  ) : (
+                    <Icon icon="solar:moon-bold-duotone" className="size-4 text-[#B45309]" />
+                  )}
+                </button>
+
                 {/* Toggle Chat History Tab */}
                 <button
                   onClick={() => setShowHistory((prev) => !prev)}
@@ -371,8 +407,8 @@ export default function AICuratorChatbot() {
                   aria-label="History"
                   className={`p-2 rounded-xl transition-all cursor-pointer flex items-center gap-1 text-xs font-semibold ${
                     showHistory
-                      ? "bg-[#D4AF37] text-black shadow-md"
-                      : "text-gray-400 hover:text-[#FFE58F] hover:bg-white/5"
+                      ? "bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black shadow-md"
+                      : "text-slate-500 hover:text-amber-700 dark:text-gray-400 dark:hover:text-[#FFE58F] hover:bg-slate-100 dark:hover:bg-white/5"
                   }`}
                 >
                   <Icon icon={showHistory ? "solar:chat-round-line-bold" : "solar:history-bold-duotone"} className="size-4" />
@@ -384,7 +420,7 @@ export default function AICuratorChatbot() {
                   onClick={handleNewChat}
                   title="Start New Consultation"
                   aria-label="New Chat"
-                  className="p-2 rounded-xl text-gray-400 hover:text-[#FFE58F] hover:bg-white/5 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl text-slate-500 hover:text-amber-700 dark:text-gray-400 dark:hover:text-[#FFE58F] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   <Icon icon="solar:pen-new-square-bold-duotone" className="size-4" />
                 </button>
@@ -394,7 +430,7 @@ export default function AICuratorChatbot() {
                   onClick={closeCurator}
                   title="Close Curator"
                   aria-label="Close"
-                  className="p-2 rounded-xl text-gray-400 hover:text-[#D4AF37] hover:bg-white/5 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl text-slate-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-[#D4AF37] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   <Icon icon="solar:close-square-bold" className="size-5" />
                 </button>
@@ -403,17 +439,17 @@ export default function AICuratorChatbot() {
 
             {/* --- VIEW: CHAT HISTORY LIST --- */}
             {showHistory ? (
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col bg-[#0A0B08]">
-                <div className="flex items-center justify-between pb-3 border-b border-[#2A2C22] mb-3">
+              <div className="ai-curator-history-view flex-1 overflow-y-auto p-4 flex flex-col bg-[#F8FAFC] dark:bg-[#0A0B08] transition-colors duration-200">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#2A2C22] mb-3">
                   <div className="flex items-center gap-2">
-                    <Icon icon="solar:history-bold-duotone" className="size-4 text-[#D4AF37]" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-gray-300">
+                    <Icon icon="solar:history-bold-duotone" className="size-4 text-amber-700 dark:text-[#D4AF37]" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300">
                       Past Consultations ({sessions.length})
                     </span>
                   </div>
                   <button
                     onClick={handleNewChat}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-[#D4AF37] text-black hover:bg-[#FFE58F] transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-600 dark:bg-[#D4AF37] text-white dark:text-black hover:brightness-110 transition-all cursor-pointer shadow-xs"
                   >
                     <Icon icon="solar:add-circle-bold" className="size-3.5" />
                     <span>New Chat</span>
@@ -437,18 +473,18 @@ export default function AICuratorChatbot() {
                       <div
                         key={sess.id}
                         onClick={() => handleSelectSession(sess)}
-                        className={`group relative flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
+                        className={`ai-curator-history-item group relative flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
                           isActive
-                            ? "bg-[#1C1D15] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.15)]"
-                            : "bg-[#12130F] border-[#2A2C22] hover:border-[#3A3C2F] hover:bg-[#161712]"
+                            ? "active bg-amber-50 dark:bg-[#1C1D15] border-amber-500 dark:border-[#D4AF37] shadow-xs"
+                            : "bg-white dark:bg-[#12130F] border-slate-200 dark:border-[#2A2C22] hover:border-amber-400/50 dark:hover:border-[#3A3C2F]"
                         }`}
                       >
                         <div className="flex items-start gap-3 min-w-0 pr-2">
                           <div
                             className={`p-2 rounded-xl shrink-0 mt-0.5 ${
                               isActive
-                                ? "bg-[#D4AF37]/20 text-[#FFE58F]"
-                                : "bg-white/5 text-gray-400 group-hover:text-white"
+                                ? "bg-amber-100 text-amber-800 dark:bg-[#D4AF37]/20 dark:text-[#FFE58F]"
+                                : "bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-gray-400 group-hover:text-amber-700 dark:group-hover:text-white"
                             }`}
                           >
                             <Icon icon="solar:chat-dots-bold-duotone" className="size-4" />
@@ -456,12 +492,12 @@ export default function AICuratorChatbot() {
                           <div className="min-w-0">
                             <h4
                               className={`text-xs font-bold truncate transition-colors ${
-                                isActive ? "text-[#FFE58F]" : "text-gray-200 group-hover:text-white"
+                                isActive ? "text-amber-900 dark:text-[#FFE58F]" : "text-slate-800 dark:text-gray-200 group-hover:text-amber-700 dark:group-hover:text-white"
                               }`}
                             >
                               {sess.title || "Art Consultation"}
                             </h4>
-                            <p className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-2">
+                            <p className="text-[10px] text-slate-500 dark:text-gray-500 mt-0.5 flex items-center gap-2">
                               <span>{dateFormatted}</span>
                               <span>•</span>
                               <span>{messageCount} msgs</span>
@@ -469,12 +505,11 @@ export default function AICuratorChatbot() {
                           </div>
                         </div>
 
-                        {/* Delete Session Button */}
                         <button
                           onClick={(e) => handleDeleteSession(sess.id, e)}
                           title="Delete this chat"
                           aria-label="Delete chat"
-                          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
+                          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all cursor-pointer"
                         >
                           <Icon icon="solar:trash-bin-trash-bold" className="size-4" />
                         </button>
@@ -484,10 +519,10 @@ export default function AICuratorChatbot() {
                 </div>
 
                 {sessions.length > 1 && (
-                  <div className="pt-3 border-t border-[#2A2C22] mt-3 text-center">
+                  <div className="pt-3 border-t border-slate-200 dark:border-[#2A2C22] mt-3 text-center">
                     <button
                       onClick={handleClearAllHistory}
-                      className="text-[11px] text-gray-500 hover:text-red-400 transition-colors cursor-pointer"
+                      className="text-[11px] text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
                     >
                       Clear all conversation history
                     </button>
@@ -498,7 +533,7 @@ export default function AICuratorChatbot() {
               /* --- VIEW: ACTIVE CHAT CONVERSATION --- */
               <>
                 {/* --- CHAT MESSAGES BODY --- */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-[#2A2C22]">
+                <div className="ai-curator-body flex-1 overflow-y-auto p-4 space-y-4 bg-[#F8FAFC] dark:bg-[#0E0F0C] scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-[#2A2C22] transition-colors duration-200">
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
@@ -509,8 +544,8 @@ export default function AICuratorChatbot() {
                       <div
                         className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                           msg.role === "user"
-                            ? "bg-[#D4AF37] text-black font-medium rounded-tr-none shadow-md"
-                            : "bg-[#161713] text-gray-200 border border-[#2A2C22] rounded-tl-none shadow-sm"
+                            ? "ai-curator-user-bubble bg-gradient-to-r from-[#D97706] to-[#B45309] dark:from-transparent dark:to-transparent dark:bg-[#D4AF37] text-white dark:text-black font-medium rounded-tr-none shadow-sm"
+                            : "ai-curator-assistant-bubble bg-white dark:bg-[#161713] text-slate-800 dark:text-gray-200 border border-slate-200 dark:border-[#2A2C22] rounded-tl-none shadow-xs"
                         }`}
                       >
                         <ChatMessageMarkdown
@@ -519,10 +554,10 @@ export default function AICuratorChatbot() {
                         />
                       </div>
 
-                      {/* Render Recommended Artwork Cards inside message */}
+                      {/* Recommended Artwork Cards */}
                       {msg.recommendedArts && msg.recommendedArts.length > 0 && (
                         <div className="w-full mt-3 grid grid-cols-1 gap-2.5">
-                          <p className="text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider flex items-center gap-1">
+                          <p className="text-[11px] font-bold text-amber-800 dark:text-[#D4AF37] uppercase tracking-wider flex items-center gap-1">
                             <Icon icon="solar:gallery-favourite-bold-duotone" className="size-3.5" />
                             Curator Recommended Pieces ({msg.recommendedArts.length})
                           </p>
@@ -534,10 +569,9 @@ export default function AICuratorChatbot() {
                             return (
                               <div
                                 key={artId}
-                                className="flex items-center gap-3 p-2.5 rounded-xl bg-[#12130f] border border-[#3A3C2F] hover:border-[#D4AF37]/60 transition-all duration-300 group"
+                                className="ai-curator-art-card flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-[#12130f] border border-slate-200 dark:border-[#3A3C2F] hover:border-amber-500/60 dark:hover:border-[#D4AF37]/60 transition-all duration-300 group shadow-xs"
                               >
-                                {/* Artwork Image */}
-                                <Link href={`/shop/${artId}`} className="relative size-16 rounded-lg overflow-hidden shrink-0 bg-black/40">
+                                <Link href={`/shop/${artId}`} className="relative size-16 rounded-lg overflow-hidden shrink-0 bg-slate-100 dark:bg-black/40">
                                   <img
                                     src={art.image || "/placeholder.jpg"}
                                     alt={art.title}
@@ -545,29 +579,27 @@ export default function AICuratorChatbot() {
                                   />
                                 </Link>
 
-                                {/* Info */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between gap-1">
                                     <Link
                                       href={`/shop/${artId}`}
-                                      className="text-xs font-bold text-white hover:text-[#D4AF37] truncate transition-colors"
+                                      className="text-xs font-bold text-slate-900 dark:text-white hover:text-amber-700 dark:hover:text-[#D4AF37] truncate transition-colors"
                                     >
                                       {art.title}
                                     </Link>
-                                    <span className="text-[11px] font-bold text-[#FFE58F]">
+                                    <span className="text-[11px] font-bold text-amber-700 dark:text-[#FFE58F]">
                                       ${art.price}
                                     </span>
                                   </div>
-                                  <p className="text-[10px] text-gray-400 truncate">
+                                  <p className="text-[10px] text-slate-500 dark:text-gray-400 truncate">
                                     By {art.artist || art.artistName || "Artist"} • {art.category}
                                   </p>
-                                  <div className="flex items-center gap-1 text-[10px] text-[#D4AF37] mt-1">
+                                  <div className="flex items-center gap-1 text-[10px] text-amber-700 dark:text-[#D4AF37] mt-1 font-semibold">
                                     <Icon icon="solar:star-bold" className="size-2.5" />
                                     <span>{art.rating ? Number(art.rating).toFixed(1) : "5.0"}</span>
                                   </div>
                                 </div>
 
-                                {/* Actions */}
                                 <div className="flex flex-col gap-1 shrink-0">
                                   <button
                                     onClick={() => handleAddToCart(art)}
@@ -575,7 +607,7 @@ export default function AICuratorChatbot() {
                                     className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
                                       isAdded
                                         ? "bg-emerald-600 text-white"
-                                        : "bg-[#25261F] text-[#FFE58F] hover:bg-[#D4AF37] hover:text-black border border-[#3A3C2F]"
+                                        : "bg-amber-100 hover:bg-amber-600 hover:text-white text-amber-900 border border-amber-300 dark:bg-[#25261F] dark:text-[#FFE58F] dark:hover:bg-[#D4AF37] dark:hover:text-black dark:border-[#3A3C2F]"
                                     }`}
                                   >
                                     <Icon icon={isAdded ? "solar:check-circle-bold" : "solar:cart-plus-bold"} className="size-3" />
@@ -584,7 +616,7 @@ export default function AICuratorChatbot() {
 
                                   <Link
                                     href={`/shop/${artId}`}
-                                    className="px-2 py-1 text-center rounded-lg text-[9px] text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 transition-colors"
+                                    className="px-2 py-1 text-center rounded-lg text-[9px] text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors"
                                   >
                                     Details
                                   </Link>
@@ -595,20 +627,20 @@ export default function AICuratorChatbot() {
                         </div>
                       )}
 
-                      <span className="text-[9px] text-gray-500 mt-1 px-1">
+                      <span className="text-[9px] text-slate-400 dark:text-gray-500 mt-1 px-1">
                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
                   ))}
 
-                  {/* Typing / Loading indicator */}
+                  {/* Loading indicator */}
                   {isLoading && (
                     <div className="flex items-start gap-2">
-                      <div className="bg-[#161713] border border-[#2A2C22] rounded-2xl rounded-tl-none px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
+                      <div className="bg-white dark:bg-[#161713] border border-slate-200 dark:border-[#2A2C22] text-slate-600 dark:text-gray-400 rounded-2xl rounded-tl-none px-4 py-3 text-xs flex items-center gap-2 shadow-xs">
                         <span className="flex gap-1">
-                          <span className="size-1.5 rounded-full bg-[#D4AF37] animate-bounce"></span>
-                          <span className="size-1.5 rounded-full bg-[#D4AF37] animate-bounce [animation-delay:0.2s]"></span>
-                          <span className="size-1.5 rounded-full bg-[#D4AF37] animate-bounce [animation-delay:0.4s]"></span>
+                          <span className="size-1.5 rounded-full bg-amber-600 dark:bg-[#D4AF37] animate-bounce"></span>
+                          <span className="size-1.5 rounded-full bg-amber-600 dark:bg-[#D4AF37] animate-bounce [animation-delay:0.2s]"></span>
+                          <span className="size-1.5 rounded-full bg-amber-600 dark:bg-[#D4AF37] animate-bounce [animation-delay:0.4s]"></span>
                         </span>
                         <span>Curator is curating your personalized selection...</span>
                       </div>
@@ -619,13 +651,13 @@ export default function AICuratorChatbot() {
                 </div>
 
                 {/* --- QUICK PROMPT CHIPS --- */}
-                <div className="px-4 py-2 border-t border-[#22241A] bg-[#0E0F0C]/60 flex gap-1.5 overflow-x-auto no-scrollbar">
+                <div className="ai-curator-chips-bar px-4 py-2 border-t border-slate-200 dark:border-[#22241A] bg-slate-50 dark:bg-[#0E0F0C]/60 flex gap-1.5 overflow-x-auto no-scrollbar scrollbar-none">
                   {quickPrompts.map((chip, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(chip.text)}
                       disabled={isLoading}
-                      className="whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#1A1B15] text-[#D8CCA9] hover:bg-[#D4AF37]/20 hover:text-[#FFE58F] border border-[#3A3C2F] transition-all shrink-0 cursor-pointer disabled:opacity-50"
+                      className="ai-curator-chip whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-medium bg-white dark:bg-[#1A1B15] text-slate-700 dark:text-[#D8CCA9] hover:bg-amber-50 dark:hover:bg-[#D4AF37]/20 hover:text-amber-800 dark:hover:text-[#FFE58F] border border-slate-200 dark:border-[#3A3C2F] transition-all shrink-0 cursor-pointer disabled:opacity-50 shadow-2xs"
                     >
                       {chip.label}
                     </button>
@@ -633,13 +665,13 @@ export default function AICuratorChatbot() {
                 </div>
 
                 {/* --- INPUT FORM --- */}
-                <div className="p-3 border-t border-[#2A2C22] bg-[#141510]">
+                <div className="ai-curator-footer p-3 border-t border-slate-200 dark:border-[#2A2C22] bg-white dark:bg-[#141510] transition-colors duration-200">
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
                       handleSendMessage();
                     }}
-                    className="flex items-center gap-2 bg-[#0E0F0C] border border-[#3A3C2F] focus-within:border-[#D4AF37] rounded-2xl px-3 py-1.5 transition-all shadow-inner"
+                    className="ai-curator-pill flex items-center gap-2 bg-slate-100 dark:bg-[#0E0F0C] border border-slate-300 dark:border-[#3A3C2F] focus-within:border-amber-600 dark:focus-within:border-[#D4AF37] rounded-2xl px-3 py-1.5 transition-all shadow-inner"
                   >
                     <input
                       ref={inputRef}
@@ -648,19 +680,19 @@ export default function AICuratorChatbot() {
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder="Ask about art styles, budget, living room decor..."
                       disabled={isLoading}
-                      className="flex-1 bg-transparent text-sm text-gray-100 placeholder-gray-500 focus:outline-none py-1.5 px-1"
+                      className="ai-curator-input flex-1 bg-transparent text-sm text-slate-900 dark:text-gray-100 placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none py-1.5 px-1 border-none shadow-none outline-none"
                     />
 
                     <button
                       type="submit"
                       disabled={!inputValue.trim() || isLoading}
                       aria-label="Send message"
-                      className="size-8 rounded-xl bg-gradient-to-tr from-[#AA7C11] to-[#D4AF37] text-black font-bold flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100 cursor-pointer shadow-md"
+                      className="size-8 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-500 dark:from-[#AA7C11] dark:to-[#D4AF37] text-white dark:text-black font-bold flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100 cursor-pointer shadow-md"
                     >
                       <Icon icon="solar:plain-bold" className="size-4" />
                     </button>
                   </form>
-                  <div className="mt-1.5 text-center text-[10px] text-gray-500">
+                  <div className="mt-1.5 text-center text-[10px] text-slate-400 dark:text-gray-500">
                     Powered by Google Gemini • Real-time ArtHall live catalog
                   </div>
                 </div>

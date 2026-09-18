@@ -109,6 +109,7 @@ html.light [class*="hover:bg-zinc-900"]:hover {
 
 /* 5. Hero Section / Large Gradient Containers */
 html.light [class*="from-[#161616]"],
+html.light [class*="from-[#181818]"],
 html.light [class*="from-[#161612]"],
 html.light [class*="from-[#1c1710]"],
 html.light [class*="from-[#1c1d17]"],
@@ -118,10 +119,12 @@ html.light [class*="from-[#0D0D0E]"],
 html.light [class*="from-[#0F0F0C]"],
 html.light [class*="from-[#111111]"],
 html.light [class*="from-zinc-950"],
-html.light [class*="from-zinc-900"] {
+html.light [class*="from-zinc-900"],
+html.light .auth-card {
   background-color: #FFFFFF !important;
   background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%) !important;
   border-color: #E2E8F0 !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(212, 175, 55, 0.2) !important;
 }
 
 /* 6. Dropdowns, Drawers, Modals & Profile Menu */
@@ -266,14 +269,29 @@ html.light tbody tr:hover {
 }
 
 /* 14. Interactive Buttons */
-html.light button[class*="from-[#AA7C11]"]:not([class*="hover:"]):not([class*="bg-[#1"]),
-html.light a[class*="from-[#AA7C11]"]:not([class*="hover:"]):not([class*="bg-[#1"]),
+html.light button[class*="from-[#AA7C11]"],
+html.light a[class*="from-[#AA7C11]"],
 html.light button.btn-gold,
 html.light a.btn-gold {
   background: linear-gradient(135deg, #D97706 0%, #B45309 100%) !important;
   color: #FFFFFF !important;
   border: none !important;
   box-shadow: 0 4px 14px rgba(180, 83, 9, 0.25) !important;
+}
+
+html.light button[class*="from-[#AA7C11]"]:hover,
+html.light a[class*="from-[#AA7C11]"]:hover,
+html.light button.btn-gold:hover,
+html.light a.btn-gold:hover {
+  background: linear-gradient(135deg, #B45309 0%, #92400E 100%) !important;
+}
+
+html.dark button.btn-gold,
+html:not(.light) button.btn-gold {
+  background: linear-gradient(90deg, #AA7C11, #D4AF37, #AA7C11) !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25) !important;
 }
 
 html.light button[class*="border-zinc-800"],
@@ -297,3 +315,216 @@ html.light .bg-clip-text {
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
 }
+
+/* 16. Dedicated OTP Input Digit Boxes */
+.otp-digit-box {
+  width: 44px;
+  height: 56px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+@media (min-width: 640px) {
+  .otp-digit-box {
+    width: 48px;
+    height: 58px;
+    font-size: 24px;
+  }
+}
+
+/* Light Mode OTP Box */
+html.light .otp-digit-box {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  border: 2px solid #CBD5E1 !important;
+}
+html.light .otp-digit-box:focus {
+  border-color: #B45309 !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.15) !important;
+}
+html.light .otp-digit-box.has-val {
+  border-color: #D97706 !important;
+  color: #92400E !important;
+  background-color: #FEF3C7 !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.15) !important;
+}
+
+/* Dark Mode OTP Box */
+html.dark .otp-digit-box,
+html:not(.light) .otp-digit-box {
+  background-color: #121212 !important;
+  color: #FFFFFF !important;
+  border: 2px solid rgba(212, 175, 55, 0.25) !important;
+}
+html.dark .otp-digit-box:focus,
+html:not(.light) .otp-digit-box:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.35) !important;
+}
+html.dark .otp-digit-box.has-val,
+html:not(.light) .otp-digit-box.has-val {
+  border-color: #D4AF37 !important;
+  color: #FFE58F !important;
+  background-color: #1A1A1A !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25) !important;
+}
+
+/* 17. Auth Notices & Badges */
+html.light .auth-error-notice {
+  background-color: #FEF2F2 !important;
+  border-color: #FECACA !important;
+  color: #B91C1C !important;
+}
+html.light .auth-success-notice {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #047857 !important;
+}
+
+/* 18. Cross-browser Scrollbar Hide */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* ==========================================================================
+   19. AI CURATOR CHATBOT DUAL THEME SYSTEM
+   ========================================================================== */
+
+/* Light Mode AI Curator */
+html.light .ai-curator-modal {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(212, 175, 55, 0.2) !important;
+}
+
+html.light .ai-curator-header {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+html.light .ai-curator-body {
+  background-color: #F8FAFC !important;
+}
+
+html.light .ai-curator-footer {
+  background-color: #FFFFFF !important;
+  border-top: 1px solid #E2E8F0 !important;
+}
+
+html.light .ai-curator-pill {
+  background-color: #F1F5F9 !important;
+  border: 1.5px solid #CBD5E1 !important;
+}
+
+html.light .ai-curator-pill:focus-within {
+  background-color: #FFFFFF !important;
+  border-color: #B45309 !important;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12) !important;
+}
+
+html.light .ai-curator-input {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #0F172A !important;
+  padding: 4px 6px !important;
+}
+
+html.light .ai-curator-input::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light .ai-curator-assistant-bubble {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #1E293B !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .ai-curator-assistant-bubble p {
+  color: #334155 !important;
+}
+
+html.light .ai-curator-assistant-bubble strong {
+  color: #92400E !important;
+}
+
+html.light .ai-curator-assistant-bubble em {
+  color: #64748B !important;
+}
+
+html.light .ai-curator-assistant-bubble code {
+  background-color: #F1F5F9 !important;
+  color: #B45309 !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .ai-curator-user-bubble {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(180, 83, 9, 0.25) !important;
+}
+
+html.light .ai-curator-chips-bar {
+  background-color: #F8FAFC !important;
+  border-top: 1px solid #E2E8F0 !important;
+}
+
+html.light .ai-curator-chip {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .ai-curator-chip:hover {
+  background-color: #FEF3C7 !important;
+  border-color: #F59E0B !important;
+  color: #92400E !important;
+}
+
+html.light .ai-curator-art-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .ai-curator-art-card:hover {
+  border-color: #D97706 !important;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.15) !important;
+}
+
+html.light .ai-curator-history-view {
+  background-color: #F8FAFC !important;
+}
+
+html.light .ai-curator-history-item {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+html.light .ai-curator-history-item:hover {
+  border-color: #D97706 !important;
+  background-color: #FFFBEB !important;
+}
+
+html.light .ai-curator-history-item.active {
+  background-color: #FEF3C7 !important;
+  border-color: #D97706 !important;
+}
+
+

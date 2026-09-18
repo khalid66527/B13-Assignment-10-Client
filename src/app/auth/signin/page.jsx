@@ -129,7 +129,7 @@ const SigninForm = () => {
             <div className="space-y-1">
               <div className="flex justify-between items-center ml-1 mb-1">
                 <label className="text-xs font-semibold text-[#D4AF37]/80">Password</label>
-                <a href="/forgot-password" className="text-xs text-gray-500 hover:text-[#D4AF37] transition-colors">
+                <a href="/auth/forgot-password" className="text-xs text-gray-500 hover:text-[#D4AF37] transition-colors">
                   Forgot?
                 </a>
               </div>

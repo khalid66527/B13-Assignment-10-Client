@@ -28,6 +28,7 @@ export default function CustomHeader() {
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme") || "dark";
+    setTheme(localTheme);
     if (localTheme === "dark") {
       document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");
@@ -326,6 +327,18 @@ export default function CustomHeader() {
             </div>
           ) : (
             <div className="flex items-center gap-2 sm:gap-4">
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle Theme"
+                title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+                className="p-2 rounded-xl text-[#e8dcb8] hover:text-white hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer"
+              >
+                {theme === "dark" ? (
+                  <Icon icon="solar:sun-2-bold-duotone" className="size-5 text-[#D4AF37]" />
+                ) : (
+                  <Icon icon="solar:moon-bold-duotone" className="size-5 text-[#B45309]" />
+                )}
+              </button>
               <Link href="/auth/signin" className="text-[#e8dcb8] hover:text-white transition-colors font-medium text-xs sm:text-sm">
                 Sign In
               </Link>
